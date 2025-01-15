@@ -1,20 +1,29 @@
 const path = require('path');
 module.exports = {
-  entry: './src/frontend/index.js',
+  entry: './frontend/src/index.js',
   output: {
-    path: path.join(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'frontend', 'dist'),
     filename: 'bundle.js'
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
-        query: {
-          presets: [ 'es2015', 'react']
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [ '@babel/preset-env', '@babel/preset-react']
+          }
         }
       }
     ]
+  },
+  resolve: {
+    alias: {
+      react: path.resolve('./node_modules/react'),
+      'react-dom': path.resolve('./node_modules/react-dom')
+    },
+    extensions: ['.js', '.jsx']
   }
 };
