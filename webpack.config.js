@@ -1,4 +1,6 @@
 const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
 module.exports = {
   entry: './frontend/src/index.js',
   output: {
@@ -16,6 +18,13 @@ module.exports = {
             presets: [ '@babel/preset-env', '@babel/preset-react']
           }
         }
+      },
+      {
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader'
+        ]
       }
     ]
   },
@@ -25,5 +34,10 @@ module.exports = {
       'react-dom': path.resolve('./node_modules/react-dom')
     },
     extensions: ['.js', '.jsx']
-  }
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: 'styles.css',
+    }),
+  ]
 };

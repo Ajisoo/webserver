@@ -1,0 +1,43 @@
+/* General styles for button-like links */
+a {
+  display: inline-block;
+  padding: 10px 20px; /* Add padding for button size */
+  margin: 5px; /* Add spacing between buttons */
+  font-size: 16px; /* Maintain consistent font size */
+  font-weight: bold; /* Make the text bold */
+  color: #fff; /* Text color */
+  background-color: #007bff; /* Button background color */
+  border: 2px solid #0056b3; /* Border with slightly darker shade */
+  border-radius: 5px; /* Rounded corners */
+  text-align: center; /* Center-align text */
+  text-decoration: none; /* Remove underline */
+  transition: background-color 0.3s, box-shadow 0.3s; /* Smooth hover effect */
+}
+
+/* Hover effect */
+a:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow on hover */
+}
+
+/* Active link style */
+a.active-link {
+  background-color: #28a745; /* Green background for active link */
+  border-color: #218838; /* Darker green border */
+}
+
+/* Navigation list styles */
+nav ul {
+  list-style-type: none; /* Remove bullet points */
+  padding: 0;
+  margin: 0;
+  display: flex; /* Display links inline */
+  gap: 10px; /* Add spacing between items */
+}
+
+/* Additional styling for the nav bar (optional) */
+nav {
+  background-color: #f8f9fa; /* Light gray background */
+  padding: 10px; /* Add padding around the navigation */
+  border-bottom: 2px solid #e9ecef; /* Subtle border for the nav bar */
+}

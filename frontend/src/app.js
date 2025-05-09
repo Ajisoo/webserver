@@ -1,0 +1,19 @@
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Home from './pages/home';
+import Schedule from './pages/schedule';
+import NoRoute from './pages/noroute';
+import NavBar from './component/navbar';
+
+export default function App() {
+  return (
+    <>
+      <NavBar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/schedule" element={<Schedule />} />
+        <Route path="*" element={<NoRoute />} />
+      </Routes>
+    </>
+  );
+};

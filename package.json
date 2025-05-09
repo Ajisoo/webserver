@@ -19,14 +19,19 @@
     "axios": "^1.7.9",
     "babel-loader": "^9.2.1",
     "babel-preset-react": "^6.24.1",
+    "css-loader": "^7.1.2",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "fs": "^0.0.1-security",
     "http": "^0.0.1-security",
     "https": "^1.0.0",
+    "mini-css-extract-plugin": "^2.9.2",
+    "navbar": "^3.0.0",
     "path": "^0.12.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-router-dom": "^7.1.1",
+    "style-loader": "^4.0.0",
     "webpack": "^5.97.1"
   }
 }
