@@ -7,9 +7,9 @@
     "postinstall": "npm run webpack",
     "webpack": "node node_modules/webpack/bin/webpack.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npm run webpack -- -w & nodemon --ignore src/ --ignore dist/ frontend/server.js",
+    "dev": "webpack --mode development --watch & nodemon --ignore src/ --ignore dist/ frontend/server.js",
     "client": "node frontend/server.js",
-    "server": "node backend/src/app.js"
+    "build": "webpack --mode production"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,7 @@
   "dependencies": {
     "@babel/preset-env": "^7.26.0",
     "axios": "^1.7.9",
+    "@babel/preset-react": "^7.27.1",
     "babel-loader": "^9.2.1",
     "babel-preset-react": "^6.24.1",
     "css-loader": "^7.1.2",
@@ -33,5 +34,8 @@
     "react-router-dom": "^7.1.1",
     "style-loader": "^4.0.0",
     "webpack": "^5.97.1"
+  },
+  "devDependencies": {
+    "webpack-cli": "^6.0.1"
   }
 }

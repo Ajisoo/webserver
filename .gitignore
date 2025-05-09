@@ -4,3 +4,6 @@ pull.sh
 node_modules/
 data/
 dist/
+.idea
+.mvn
+backend/target/
