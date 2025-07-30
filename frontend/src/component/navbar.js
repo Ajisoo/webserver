@@ -25,6 +25,16 @@ export default function NavBar() {
           Schedule
         </NavLink>
         </li>
+        <li>
+          <NavLink
+            to="/tetris"
+            className={({ isActive }) => {
+              return isActive ? "active-link" : "";
+           }}
+        >
+          Tetris
+        </NavLink>
+        </li>
       </ul>
     </nav>
   );
