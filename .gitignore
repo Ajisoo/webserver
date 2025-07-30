@@ -6,4 +6,3 @@ data/
 dist/
 .idea
 .mvn
-backend/target/
