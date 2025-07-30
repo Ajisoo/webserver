@@ -235,6 +235,7 @@ const dropPiece = (playerId, isTimerTriggered = false) => {
     // Check if the new piece can be placed
     if (checkCollision(newPiece, gameState.sharedBoard, 0, 0)) {
       gameState.gameOver = true;
+      broadcastGameState();
       // Restart game after 5 seconds
       setTimeout(() => {
         resetGame();
