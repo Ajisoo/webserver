@@ -11,12 +11,8 @@ const app = express();
 const server = http.createServer(app);
 
 // WebSocket server
-let wss;
-if (process.env.NODE_ENV === 'production') {
-  wss = new WebSocket('wss://ajisoo.xyz/socket');
-} else {
-  wss = new WebSocket.Server({ server });
-}
+const wss = new WebSocket('wss://ajisoo.xyz/socket');
+//const wss = new WebSocket.Server({ server });
 
 app.use('/dist', express.static(path.join(__dirname, 'dist')));
 
