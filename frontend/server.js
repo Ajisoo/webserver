@@ -11,8 +11,7 @@ const app = express();
 const server = http.createServer(app);
 
 // WebSocket server
-const wss = new WebSocket('wss://ajisoo.xyz/socket');
-//const wss = new WebSocket.Server({ server });
+const wss = new WebSocket.Server({ server });
 
 app.use('/dist', express.static(path.join(__dirname, 'dist')));
 
