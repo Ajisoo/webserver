@@ -178,7 +178,7 @@ const dropPiece = (playerId, isTimerTriggered = false) => {
   if (!piece || gameState.gameOver) return;
 
   // Try to move piece down
-  if (checkPieceCollision(piece, gameState.currentPieces, 0, 1) && !isTimerTriggered) {
+  if (checkPieceCollision(piece, gameState.currentPieces, 0, 1, piece) && !isTimerTriggered) {
     // Do nothing, we are colliding with another falling piece  
     return;
   } else if (!checkCollision(piece, gameState.sharedBoard, 0, 1)) {
@@ -342,7 +342,7 @@ wss.on('connection', (ws) => {
            
            if (data.direction === 'left') {
              if (!checkCollision(piece, gameState.sharedBoard, -1, 0) && 
-                 !checkPieceCollision(piece, gameState.currentPieces, -1, 0)) {
+                 !checkPieceCollision(piece, gameState.currentPieces, -1, 0, piece)) {
                gameState.currentPieces.set(playerId, {
                  ...piece,
                  pos: { x: piece.pos.x - 1, y: piece.pos.y }
@@ -351,7 +351,7 @@ wss.on('connection', (ws) => {
              }
            } else if (data.direction === 'right') {
              if (!checkCollision(piece, gameState.sharedBoard, 1, 0) && 
-                 !checkPieceCollision(piece, gameState.currentPieces, 1, 0)) {
+                 !checkPieceCollision(piece, gameState.currentPieces, 1, 0, piece)) {
                gameState.currentPieces.set(playerId, {
                  ...piece,
                  pos: { x: piece.pos.x + 1, y: piece.pos.y }
@@ -360,7 +360,7 @@ wss.on('connection', (ws) => {
              }
            } else if (data.direction === 'down') {
              if (!checkCollision(piece, gameState.sharedBoard, 0, 1) && 
-                 !checkPieceCollision(piece, gameState.currentPieces, 0, 1)) {
+                 !checkPieceCollision(piece, gameState.currentPieces, 0, 1, piece)) {
                gameState.currentPieces.set(playerId, {
                  ...piece,
                  pos: { x: piece.pos.x, y: piece.pos.y + 1 }
