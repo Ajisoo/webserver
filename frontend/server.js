@@ -13,6 +13,11 @@ const server = http.createServer(app);
 // WebSocket server
 const wss = new WebSocket.Server({ server });
 
+// WebSocket server error handling
+wss.on('error', (error) => {
+  console.error('WebSocket server error:', error);
+});
+
 app.use('/dist', express.static(path.join(__dirname, 'dist')));
 
 app.get('*', (req,res,next) => res.sendFile(path.join(__dirname, 'index.html')));
