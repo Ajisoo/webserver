@@ -16,7 +16,7 @@ export default function Tetris() {
 
   useEffect(() => {
     // Connect to WebSocket server
-    const ws = new WebSocket(`wss://${window.location.hostname}/socket`);
+    const ws = new WebSocket(`wss://${window.location.hostname}/socket/`);
     wsRef.current = ws;
 
     ws.onopen = () => {
