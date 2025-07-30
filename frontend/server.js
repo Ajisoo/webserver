@@ -141,9 +141,9 @@ const checkCollision = (piece, board, moveX = 0, moveY = 0) => {
 };
 
 // Check if a piece collides with any other pieces
-const checkPieceCollision = (piece, otherPieces, moveX = 0, moveY = 0) => {
+const checkPieceCollision = (piece, otherPieces, moveX = 0, moveY = 0, excludePiece = null) => {
   for (const [otherPlayerId, otherPiece] of otherPieces) {
-    if (!otherPiece || otherPiece === piece) continue;
+    if (!otherPiece || otherPiece === excludePiece) continue;
     
     // Check if this piece overlaps with the other piece
     for (let y = 0; y < piece.tetromino.shape.length; y += 1) {
@@ -381,7 +381,7 @@ wss.on('connection', (ws) => {
              };
              
              if (!checkCollision(rotated, gameState.sharedBoard) && 
-                 !checkPieceCollision(rotated, gameState.currentPieces, 0, 0)) {
+                 !checkPieceCollision(rotated, gameState.currentPieces, 0, 0, piece)) {
                gameState.currentPieces.set(playerId, rotated);
                moved = true;
              }
