@@ -1,12 +1,12 @@
 import React from 'react';
 
-export default function TetrisPiece({ piece }) {
+export default function TetrisPiece({piece}) {
   if (!piece || !piece.tetromino) return null;
 
-  const { tetromino, pos } = piece;
+  const {tetromino, pos} = piece;
 
   return (
-    <div className="tetris-piece" style={{ position: 'absolute', top: 0, left: 0 }}>
+    <div className="tetris-piece" style={{position: 'absolute', top: 0, left: 0}}>
       {tetromino.shape.map((row, y) => (
         <div key={y} className="piece-row">
           {row.map((cell, x) => (

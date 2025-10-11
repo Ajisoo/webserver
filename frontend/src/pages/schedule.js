@@ -38,7 +38,7 @@ export default function Schedule() {
   } else if (error) {
     content = <p style={{color: "red"}}>{error}</p>
   } else if (scheduleContent) {
-    content = <ScheduleInstance scheduleContent={scheduleContent} />
+    content = <ScheduleInstance scheduleContent={scheduleContent}/>
   } else {
     content = <div/>;
   }

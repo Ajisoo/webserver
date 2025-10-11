@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import TetrisGame from '../component/TetrisGame';
 
 export default function Tetris() {
@@ -26,12 +26,12 @@ export default function Tetris() {
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      
+
       switch (data.type) {
         case 'playerJoined':
           setPlayerId(data.playerId);
           break;
-          
+
         case 'gameState':
           console.log('Received game state:', data);
           setPlayers(data.players || []);
@@ -67,7 +67,7 @@ export default function Tetris() {
 
   const startGame = () => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify({ type: 'startGame' }));
+      wsRef.current.send(JSON.stringify({type: 'startGame'}));
     }
   };
 
@@ -89,13 +89,13 @@ export default function Tetris() {
   return (
     <div className="tetris-page">
       <h1>Multiplayer Tetris</h1>
-      
+
       {!connected && (
         <div className="connection-status">
           <p>Connecting to game server...</p>
         </div>
       )}
-      
+
       {connected && !gameStarted ? (
         <div className="game-lobby">
           <h2>Game Lobby</h2>
@@ -108,7 +108,7 @@ export default function Tetris() {
               </div>
             ))}
           </div>
-          
+
           <div className="lobby-controls">
             <button onClick={joinGame} className="join-btn" disabled>
               Auto-Joined
@@ -121,16 +121,16 @@ export default function Tetris() {
           </div>
         </div>
       ) : connected && gameStarted ? (
-                 <TetrisGame 
-           players={players} 
-           sharedBoard={sharedBoard}
-           currentPieces={currentPieces}
-           gameOver={gameOver}
-           score={score}
-           level={level}
-           lines={lines}
-           onMove={sendMove}
-         />
+        <TetrisGame
+          players={players}
+          sharedBoard={sharedBoard}
+          currentPieces={currentPieces}
+          gameOver={gameOver}
+          score={score}
+          level={level}
+          lines={lines}
+          onMove={sendMove}
+        />
       ) : null}
     </div>
   );

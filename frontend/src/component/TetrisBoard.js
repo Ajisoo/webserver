@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function TetrisBoard({ board }) {
+export default function TetrisBoard({board}) {
   return (
     <div className="tetris-board">
       {board.map((row, y) => (
