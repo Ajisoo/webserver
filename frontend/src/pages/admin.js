@@ -12,30 +12,25 @@ export default function Admin() {
   }, []);
 
   const fetchStatus = () => {
-    // setLoading(true);
-    // api('/admin')
-    //     .then(response => {
-    //         if (!response.ok) {
-    //             throw new Error('Failed to fetch admin status.');
-    //         }
-    //         return response.json();
-    //     })
-    //     .then(data => {
-    //         setStatus(data);
-    //         setError('');
-    //     })
-    //     .catch(err => {
-    //         setError(err.message);
-    //         setStatus(null);
-    //     })
-    //     .finally(() => {
-    //         setLoading(false);
-    //     });
-    setStatus({
-      'sadBotOnline': true,
-      'lights': [{'name': 'Living Room', 'on': true}, {'name': 'Bedroom', 'on': false}]
-    });
-    setLoading(false);
+    setLoading(true);
+    api('/admin')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch admin status.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            setStatus(data);
+            setError('');
+        })
+        .catch(err => {
+            setError(err.message);
+            setStatus(null);
+        })
+        .finally(() => {
+            setLoading(false);
+        });
   };
 
   const handleToggleLight = (name, currentState) => {
