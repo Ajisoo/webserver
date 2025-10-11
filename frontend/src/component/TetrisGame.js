@@ -1,8 +1,8 @@
-import React, { useEffect, useCallback } from 'react';
+import React, {useEffect, useCallback} from 'react';
 import TetrisBoard from './TetrisBoard';
 import TetrisPiece from './TetrisPiece';
 
-export default function TetrisGame({ players, sharedBoard, currentPieces, gameOver, score, level, lines, onMove }) {
+export default function TetrisGame({players, sharedBoard, currentPieces, gameOver, score, level, lines, onMove}) {
   const handleKeyPress = useCallback((event) => {
     if (event.keyCode === 37) {
       // Left arrow
@@ -39,14 +39,14 @@ export default function TetrisGame({ players, sharedBoard, currentPieces, gameOv
           <span>Lines: {lines}</span>
         </div>
       </div>
-      
+
       <div className="game-container">
         <div className="shared-game">
           <h3>Shared Board</h3>
           <div className="game-board">
-            <TetrisBoard board={sharedBoard} />
+            <TetrisBoard board={sharedBoard}/>
             {players.map(player => (
-              <TetrisPiece key={player.id} piece={currentPieces[player.id]} />
+              <TetrisPiece key={player.id} piece={currentPieces[player.id]}/>
             ))}
           </div>
           <div className="player-info">
@@ -59,13 +59,13 @@ export default function TetrisGame({ players, sharedBoard, currentPieces, gameOv
           </div>
         </div>
       </div>
-      
+
       {gameOver && (
         <div className="game-over">
           <h4>Game Over! Restarting in 5 seconds...</h4>
         </div>
       )}
-      
+
       <div className="game-controls">
         <p>Controls:</p>
         <p>← → : Move left/right</p>

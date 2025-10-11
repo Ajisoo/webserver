@@ -1,6 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react';
 
-export default function Home () {
+export default function Home() {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const [isPaused, setPaused] = useState(false);
@@ -18,12 +18,12 @@ export default function Home () {
   useEffect(() => {
     const resizeObserver = new ResizeObserver(() => {
       if (containerRef.current) {
-        const { offsetWidth, offsetHeight } = containerRef.current;
+        const {offsetWidth, offsetHeight} = containerRef.current;
         setCanvasSize({
           width: offsetWidth,
           height: offsetHeight,
         });
-        const { top } = containerRef.current.getBoundingClientRect();
+        const {top} = containerRef.current.getBoundingClientRect();
         setOffsetY(top);
       }
     });
@@ -99,7 +99,7 @@ export default function Home () {
         ctx.fill();
         if (isPaused && !obj.locked) {
           ctx.strokeStyle = "#f8f8f8";
-          if (Math.hypot(obj.xv*10, obj.yv*10) < obj.radius) {
+          if (Math.hypot(obj.xv * 10, obj.yv * 10) < obj.radius) {
             ctx.strokeStyle = "#282828"
           }
           ctx.lineWidth = 1;
@@ -119,35 +119,33 @@ export default function Home () {
         .filter((obj) => !obj.locked)
         .filter((obj) => !obj.held)
         .filter((obj) => obj.active)
-        .forEach((obj) =>
-        {
-          obj.nextStep = objects.current.filter((obj2) => obj2 !== obj).filter((obj2) => obj2.active).reduce((acc, obj2) => {
-            const dist = Math.hypot(obj2.x - obj.x, obj2.y - obj.y);
-            const finalX = (obj2.x - obj.x)/Math.pow(Math.max((obj.radius + obj2.radius)/4, dist), distPower)*Math.pow(obj2.radius, radiusPower)/Math.pow(10, gravityLimiter);
-            const finalY = (obj2.y - obj.y)/Math.pow(Math.max((obj.radius + obj2.radius)/4, dist), distPower)*Math.pow(obj2.radius, radiusPower)/Math.pow(10, gravityLimiter);
-            //const finalX = (obj2.x - obj.x)/dist*obj2.radius/1000;
-            //const finalY = (obj2.y - obj.y)/dist*obj2.radius/1000;
-            return {x: acc.x + finalX, y: acc.y + finalY};
-          }, {x: 0, y:0});
-        }
-      );
+        .forEach((obj) => {
+            obj.nextStep = objects.current.filter((obj2) => obj2 !== obj).filter((obj2) => obj2.active).reduce((acc, obj2) => {
+              const dist = Math.hypot(obj2.x - obj.x, obj2.y - obj.y);
+              const finalX = (obj2.x - obj.x) / Math.pow(Math.max((obj.radius + obj2.radius) / 4, dist), distPower) * Math.pow(obj2.radius, radiusPower) / Math.pow(10, gravityLimiter);
+              const finalY = (obj2.y - obj.y) / Math.pow(Math.max((obj.radius + obj2.radius) / 4, dist), distPower) * Math.pow(obj2.radius, radiusPower) / Math.pow(10, gravityLimiter);
+              //const finalX = (obj2.x - obj.x)/dist*obj2.radius/1000;
+              //const finalY = (obj2.y - obj.y)/dist*obj2.radius/1000;
+              return {x: acc.x + finalX, y: acc.y + finalY};
+            }, {x: 0, y: 0});
+          }
+        );
 
       objects.current
         .filter((obj) => !obj.locked)
         .filter((obj) => !obj.held)
         .filter((obj) => obj.active)
-        .forEach((obj) =>
-      {
-        obj.xv = obj.xv + obj.nextStep.x;
-        obj.yv = obj.yv + obj.nextStep.y;
-        obj.x = obj.x + obj.xv;
-        obj.y = obj.y + obj.yv;
-      });
+        .forEach((obj) => {
+          obj.xv = obj.xv + obj.nextStep.x;
+          obj.yv = obj.yv + obj.nextStep.y;
+          obj.x = obj.x + obj.xv;
+          obj.y = obj.y + obj.yv;
+        });
     };
 
     const animate = (timestamp) => {
       const timeSinceLastFrame = timestamp - lastFrameTime;
-      if (timeSinceLastFrame >= 1000/60) {
+      if (timeSinceLastFrame >= 1000 / 60) {
         lastFrameTime = timestamp;
         draw();
         if (!isPaused) {
@@ -186,7 +184,7 @@ export default function Home () {
       creatingInfo.startY = event.pageY - offsetY;
       creatingInfo.newObject = {
         x: event.pageX,
-        y:event.pageY - offsetY,
+        y: event.pageY - offsetY,
         xv: 0,
         yv: 0,
         radius: 0,
@@ -218,7 +216,7 @@ export default function Home () {
       return;
     }
     if (creatingInfo.isCreating) {
-      creatingInfo.newObject.radius = Math.hypot(event.pageX-creatingInfo.startX, event.pageY-offsetY-creatingInfo.startY);
+      creatingInfo.newObject.radius = Math.hypot(event.pageX - creatingInfo.startX, event.pageY - offsetY - creatingInfo.startY);
     }
     if (creatingInfo.isHolding) {
       creatingInfo.objectMoved = true;
@@ -227,8 +225,8 @@ export default function Home () {
     }
     if (creatingInfo.isRightClicked) {
       creatingInfo.objectMoved = true;
-      creatingInfo.heldObject.xv = (event.pageX - creatingInfo.heldObject.x)/10;
-      creatingInfo.heldObject.yv = (event.pageY - creatingInfo.heldObject.y - offsetY)/10;
+      creatingInfo.heldObject.xv = (event.pageX - creatingInfo.heldObject.x) / 10;
+      creatingInfo.heldObject.yv = (event.pageY - creatingInfo.heldObject.y - offsetY) / 10;
     }
   };
   const handleMouseUp = (event) => {
@@ -258,27 +256,27 @@ export default function Home () {
   };
   return (
     <div>
-      <div style={{ display: "flex", flexDirection: "row", gap: "10px", margin: "5px" }}>
+      <div style={{display: "flex", flexDirection: "row", gap: "10px", margin: "5px"}}>
         <button onClick={() => objects.current = []}>
           Clear
         </button>
         <button onClick={() => {
-              console.log(objects.current);
-              setPaused(!isPaused);
-          }}>
+          console.log(objects.current);
+          setPaused(!isPaused);
+        }}>
           {isPaused ? "Unfreeze" : "Freeze"}
         </button>
         <button onClick={() => {
-            if (objects.current) {
-              objects.current.forEach((obj) => {
-                obj.xv = obj.xv / 10;
-                obj.yv = obj.yv / 10;
-              });
-            }
-          }}>
+          if (objects.current) {
+            objects.current.forEach((obj) => {
+              obj.xv = obj.xv / 10;
+              obj.yv = obj.yv / 10;
+            });
+          }
+        }}>
           {"Slow /10"}
         </button>
-        <label style={{ display: "flex", alignItems: "center" }}>
+        <label style={{display: "flex", alignItems: "center"}}>
           Radius Multiplier: {" "}
           <input
             type="range"
@@ -292,7 +290,7 @@ export default function Home () {
           />
           {radiusPower}
         </label>
-        <label style={{ display: "flex", alignItems: "center" }}>
+        <label style={{display: "flex", alignItems: "center"}}>
           Distance Multiplier: {" "}
           <input
             type="range"
@@ -306,7 +304,7 @@ export default function Home () {
           />
           {distPower}
         </label>
-        <label style={{ display: "flex", alignItems: "center" }}>
+        <label style={{display: "flex", alignItems: "center"}}>
           Gravity Limiter: {" "}
           <input
             type="range"
@@ -326,13 +324,13 @@ export default function Home () {
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
-        style={{ width: "100%", height: "100%"}}
+        style={{width: "100%", height: "100%"}}
       >
         <canvas
           ref={canvasRef}
           width={canvasSize.width}
           height={canvasSize.height}
-          style={{ display: "block", backgroundColor: "#282828"}} />
+          style={{display: "block", backgroundColor: "#282828"}}/>
       </div>
     </div>
   );

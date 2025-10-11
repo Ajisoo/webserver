@@ -1,14 +1,16 @@
 import React from 'react';
-import { NavLink} from "react-router-dom";
+import {NavLink} from "react-router-dom";
 
 export default function NavBar() {
+  // Check if the refreshToken cookie exists
+  const refreshToken = Cookies.get('refreshToken');
   return (
     <nav>
       <ul>
         <li>
           <NavLink
             to="/"
-            className={({ isActive }) => {
+            className={({isActive}) => {
               return isActive ? "active-link" : "";
             }}
           >
@@ -18,23 +20,47 @@ export default function NavBar() {
         <li>
           <NavLink
             to="/schedule"
-            className={({ isActive }) => {
+            className={({isActive}) => {
               return isActive ? "active-link" : "";
-           }}
-        >
-          Schedule
-        </NavLink>
+            }}
+          >
+            Schedule
+          </NavLink>
         </li>
         <li>
           <NavLink
             to="/tetris"
-            className={({ isActive }) => {
+            className={({isActive}) => {
               return isActive ? "active-link" : "";
-           }}
-        >
-          Tetris
-        </NavLink>
+            }}
+          >
+            Tetris
+          </NavLink>
         </li>
+        <li>
+          <NavLink
+            to="/auth"
+            className={({isActive}) => {
+              return isActive ? "active-link" : "";
+            }}
+          >
+            Auth
+          </NavLink>
+        </li>
+
+        {/* Conditionally render the Admin link */}
+        {refreshToken && (
+          <li>
+            <NavLink
+              to="/admin"
+              className={({isActive}) => {
+                return isActive ? "active-link" : "";
+              }}
+            >
+              Admin
+            </NavLink>
+          </li>
+        )}
       </ul>
     </nav>
   );
