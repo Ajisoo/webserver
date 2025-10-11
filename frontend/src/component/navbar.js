@@ -12,7 +12,7 @@ export default function NavBar() {
               return isActive ? "active-link" : "";
             }}
           >
-            Homes
+            Home
           </NavLink>
         </li>
         <li>
