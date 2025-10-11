@@ -1,5 +1,6 @@
 import React from 'react';
 import {NavLink} from "react-router-dom";
+import Cookies from "js-cookie";
 
 export default function NavBar() {
   // Check if the refreshToken cookie exists
