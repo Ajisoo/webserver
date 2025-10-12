@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import TetrisGame from '../component/TetrisGame';
+import './tetris.css'
 
 export default function Tetris() {
   const [players, setPlayers] = useState([]);

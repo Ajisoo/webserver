@@ -1,248 +1,81 @@
-/* General styles for button-like links */
-a {
-  display: inline-block;
-  padding: 10px 20px; /* Add padding for button size */
-  margin: 5px; /* Add spacing between buttons */
-  font-size: 16px; /* Maintain consistent font size */
-  font-weight: bold; /* Make the text bold */
-  color: #fff; /* Text color */
-  background-color: #007bff; /* Button background color */
-  border: 2px solid #0056b3; /* Border with slightly darker shade */
-  border-radius: 5px; /* Rounded corners */
-  text-align: center; /* Center-align text */
-  text-decoration: none; /* Remove underline */
-  transition: background-color 0.3s, box-shadow 0.3s; /* Smooth hover effect */
+html, body, #root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+/* --- Default (Desktop) Styles --- */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 60px);
+    background-color: #f0f2f5;
+    padding: 1rem;
+    box-sizing: border-box;
+    width: 100%;
 }
 
-/* Hover effect */
-a:hover {
-  background-color: #0056b3; /* Darker blue on hover */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow on hover */
+.auth-card {
+    background-color: #ffffff;
+    padding: 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
 }
 
-/* Active link style */
-a.active-link {
-  background-color: #28a745; /* Green background for active link */
-  border-color: #218838; /* Darker green border */
+.auth-title {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 1.5rem;
 }
 
-/* Navigation list styles */
-nav ul {
-  list-style-type: none; /* Remove bullet points */
-  padding: 0;
-  margin: 0;
-  display: flex; /* Display links inline */
-  gap: 10px; /* Add spacing between items */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
 }
 
-/* Additional styling for the nav bar (optional) */
-nav {
-  background-color: #f8f9fa; /* Light gray background */
-  padding: 10px; /* Add padding around the navigation */
-  border-bottom: 2px solid #e9ecef; /* Subtle border for the nav bar */
+.auth-input {
+    padding: 0.9rem 1.2rem;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+    outline: none;
+    width: 100%;
+    max-width: 300px;
 }
 
-/* Tetris Game Styles */
-.tetris-page {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+.auth-button {
+    padding: 0.9rem 1.2rem;
+    border-radius: 6px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    max-width: 300px;
 }
 
-.game-lobby {
-  text-align: center;
-  margin: 20px 0;
-}
+/* --- Mobile Styles (for screens 768px or less) --- */
+@media (max-width: 768px) {
+    .auth-container {
+        padding: 0;
+        align-items: stretch; /* Allow the card to stretch vertically */
+    }
 
-.player-list {
-  margin: 20px 0;
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-}
-
-.player-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  margin: 5px 0;
-  background-color: white;
-  border-radius: 4px;
-  border: 1px solid #dee2e6;
-}
-
-.lobby-controls {
-  margin: 20px 0;
-}
-
-.join-btn, .start-btn {
-  padding: 12px 24px;
-  margin: 0 10px;
-  font-size: 16px;
-  font-weight: bold;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.join-btn {
-  background-color: #007bff;
-  color: white;
-}
-
-.join-btn:hover {
-  background-color: #0056b3;
-}
-
-.start-btn {
-  background-color: #28a745;
-  color: white;
-}
-
-.start-btn:hover {
-  background-color: #218838;
-}
-
-.tetris-game {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.game-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-  margin: 20px 0;
-}
-
-.player-game {
-  text-align: center;
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  border: 2px solid #dee2e6;
-}
-
-.shared-game {
-  text-align: center;
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  border: 2px solid #dee2e6;
-  max-width: 1200px;
-  margin: 0 auto;
-  overflow-x: auto;
-}
-
-.player-info {
-  margin-top: 15px;
-  padding: 10px;
-  background-color: white;
-  border-radius: 4px;
-  border: 1px solid #dee2e6;
-}
-
-.player-info .player-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 5px 0;
-  border-bottom: 1px solid #eee;
-}
-
-.player-info .player-item:last-child {
-  border-bottom: none;
-}
-
-.game-board {
-  position: relative;
-  display: inline-block;
-  border: 2px solid #333;
-  background-color: #000;
-  margin: 10px 0;
-  min-width: 1000px;
-  overflow-x: auto;
-}
-
-.tetris-board {
-  display: flex;
-  flex-direction: column;
-}
-
-.board-row {
-  display: flex;
-}
-
-.board-cell {
-  width: 20px;
-  height: 20px;
-  box-sizing: border-box;
-}
-
-.board-cell.filled {
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.tetris-piece {
-  position: absolute;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-}
-
-.piece-cell {
-  box-sizing: border-box;
-}
-
-.game-over {
-  margin-top: 10px;
-  padding: 10px;
-  background-color: #dc3545;
-  color: white;
-  border-radius: 4px;
-}
-
-.game-controls {
-  margin-top: 20px;
-  text-align: center;
-  padding: 15px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-}
-
-.game-controls p {
-  margin: 5px 0;
-  font-weight: bold;
-}
-
-.game-stats {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin: 20px 0;
-  padding: 15px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-}
-
-.stat-item {
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
-}
-
-.connection-status {
-  text-align: center;
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  margin: 20px 0;
-}
-
-.connection-status p {
-  margin: 0;
-  font-size: 18px;
-  color: #6c757d;
+    .auth-card {
+        max-width: 100%;
+        border-radius: 0;
+        box-shadow: none;
+        /* This turns the card into a flex container to center its content */
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* This vertically centers the form */
+    }
 }

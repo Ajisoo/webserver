@@ -1,0 +1,57 @@
+/* --- Default (Desktop) Styles --- */
+.navbar {
+    background-color: #ffffff;
+    padding: 0 1rem;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    height: 60px; /* Restore fixed height for a consistent desktop look */
+    box-sizing: border-box;
+}
+
+.navbar-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: center; /* Center the links on desktop */
+}
+
+.navbar-link {
+    display: inline-block; /* Use inline-block for desktop */
+    padding: 0.8rem 1rem; /* Taller buttons */
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    background-color: transparent;
+    border-radius: 6px;
+    text-decoration: none;
+    text-align: center;
+    white-space: nowrap;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.navbar-link:hover {
+    background-color: #f0f2f5;
+    color: #007bff;
+}
+
+.navbar-link.active {
+    background-color: #007bff;
+    color: #ffffff;
+}
+
+/* --- Mobile-Only Styles (for screens 768px or less) --- */
+@media (max-width: 768px) {
+    .navbar-list > li {
+        flex-grow: 1; /* Make list items expand to fill space */
+    }
+
+    .navbar-link {
+        display: block; /* Make links fill their parent 'li' */
+        padding: 0.6rem 0.5rem;
+        font-size: 0.9rem;
+    }
+}

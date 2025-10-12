@@ -1,19 +1,20 @@
 import React from 'react';
-import {NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import Cookies from "js-cookie";
+import './navbar.css'
 
 export default function NavBar() {
-  // Check if the refreshToken cookie exists
   const refreshToken = Cookies.get('refreshToken');
+
   return (
-    <nav>
-      <ul>
+    <nav className="navbar"> {/* <-- Add navbar class */}
+      <ul className="navbar-list"> {/* <-- Add navbar-list class */}
         <li>
           <NavLink
             to="/"
-            className={({isActive}) => {
-              return isActive ? "active-link" : "";
-            }}
+            className={({ isActive }) =>
+              "navbar-link" + (isActive ? " active" : "") // <-- Updated className logic
+            }
           >
             Home
           </NavLink>
@@ -21,9 +22,9 @@ export default function NavBar() {
         <li>
           <NavLink
             to="/schedule"
-            className={({isActive}) => {
-              return isActive ? "active-link" : "";
-            }}
+            className={({ isActive }) =>
+              "navbar-link" + (isActive ? " active" : "")
+            }
           >
             Schedule
           </NavLink>
@@ -31,9 +32,9 @@ export default function NavBar() {
         <li>
           <NavLink
             to="/tetris"
-            className={({isActive}) => {
-              return isActive ? "active-link" : "";
-            }}
+            className={({ isActive }) =>
+              "navbar-link" + (isActive ? " active" : "")
+            }
           >
             Tetris
           </NavLink>
@@ -41,22 +42,21 @@ export default function NavBar() {
         <li>
           <NavLink
             to="/auth"
-            className={({isActive}) => {
-              return isActive ? "active-link" : "";
-            }}
+            className={({ isActive }) =>
+              "navbar-link" + (isActive ? " active" : "")
+            }
           >
             Auth
           </NavLink>
         </li>
 
-        {/* Conditionally render the Admin link */}
         {refreshToken && (
           <li>
             <NavLink
               to="/admin"
-              className={({isActive}) => {
-                return isActive ? "active-link" : "";
-              }}
+              className={({ isActive }) =>
+                "navbar-link" + (isActive ? " active" : "")
+              }
             >
               Admin
             </NavLink>
