@@ -1,0 +1,105 @@
+/* Main container for the admin page */
+.admin-container {
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    align-items: center;    /* Center them horizontally */
+    gap: 1.5rem;            /* Add space between the row and the grid */
+    min-height: calc(100vh - 60px);
+    background-color: #f0f2f5;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+/* Grid layout for the status cards */
+.status-grid {
+    width: 100%;
+    max-width: 1200px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    justify-items: center;
+    container-type: inline-size;
+}
+
+/* Base style for each individual card */
+.status-card {
+    padding: 1.5rem;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 150px; /* Increased min-height for a better look */
+    width: 80%; /* Make the card fill the grid cell it's given */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.status-card--on {
+    background-color: #b4d8ff; /* Pastel blue */
+    border-color: #1a3ab3;
+}
+
+.status-card--off {
+    background-color: #ffb8b8; /* Pastel red */
+    border-color: #bf3636;
+}
+
+.status-card--error {
+    background-color: #e5e7eb; /* Neutral gray */
+    border-color: #9ca3af;
+}
+
+/* Style for the name text (e.g., "Sad Bot") */
+.status-card-name {
+    font-weight: 600;
+    /* CHANGED - Use clamp() for fluid font size */
+    font-size: clamp(1rem, 12cqw, 2.5rem);
+    color: #333;
+}
+
+/* ADDED - New style for the error message text */
+.status-card-error-message {
+    font-size: 0.8rem;
+    color: #230101; /* Dark red */
+    margin-top: 0.5rem;
+    font-weight: 500;
+}
+
+/* Base style for each individual row */
+.status-row {
+    width: 95%;
+    max-width: 1000px; /* Match the grid's max-width for alignment */
+    padding: 1rem 1.5rem; /* Thinner vertical padding */
+    border-radius: 10px;
+    border: 1px solid transparent;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+}
+
+/* Color modifiers for the row */
+.status-row--on {
+    background-color: #b4d8ff;
+    border-color: #1a3ab3;
+}
+.status-row--off {
+    background-color: #ffb8b8;
+    border-color: #bf3636;
+}
+.status-row--error {
+    background-color: #e5e7eb;
+    border-color: #9ca3af;
+}
+
+/* Text styles within the row */
+.status-row-name {
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: #333;
+}
+

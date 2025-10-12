@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import api from "../util";
+import './auth.css';
 
 export default function Auth() {
   const [otp, setOtp] = useState('');
@@ -54,51 +55,3 @@ export default function Auth() {
     </div>
   );
 }
-
-const styles = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: 'calc(100vh - 60px)',
-    backgroundColor: '#f0f2f5',
-    padding: '1rem',
-    boxSizing: 'border-box',
-  },
-  card: {
-    backgroundColor: '#ffffff',
-    padding: '2.5rem',
-    borderRadius: '10px',
-    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
-    maxWidth: '400px',
-    width: '100%',
-    textAlign: 'center',
-  },
-  title: {
-    fontSize: '1.8rem',
-    color: '#333',
-    marginBottom: '1.5rem',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-  },
-  input: {
-    padding: '0.9rem 1.2rem',
-    borderRadius: '6px',
-    border: '1px solid #ddd',
-    fontSize: '1rem',
-    outline: 'none',
-  },
-  button: {
-    padding: '0.9rem 1.2rem',
-    borderRadius: '6px',
-    border: 'none',
-    backgroundColor: '#007bff',
-    color: 'white',
-    fontSize: '1rem',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-  },
-};
