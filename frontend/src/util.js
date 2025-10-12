@@ -66,7 +66,7 @@ export default async function api(path, options = {}) {
   let response = await fetch(api_host + path, {...options, headers});
 
   // 3. If the response is a 401, the access token has likely expired.
-  if (response.status === 403) {
+  if (response.status === 401) {
     try {
       // Check if a refresh is already in progress. If not, start one.
       if (!refreshTokenPromise) {
