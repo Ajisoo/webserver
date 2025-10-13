@@ -36,7 +36,7 @@ function CosmicBackground({ count = 7000 }) {
     const data = [];
     for (let i = 0; i < count; i++) {
       data.push({
-        x: THREE.MathUtils.randFloatSpread(size.width), // Use size.width directly for initial spread
+        x: THREE.MathUtils.randFloatSpread(size.width),
         y: THREE.MathUtils.randFloatSpread(size.height),
         z: THREE.MathUtils.randFloat(-25, -5),
         speed: THREE.MathUtils.randFloat(0.01, 0.08),
@@ -60,10 +60,9 @@ function CosmicBackground({ count = 7000 }) {
     for (let i = 0; i < starData.length; i++) {
       posAttr.array[i * 3] += starData[i].speed * delta * 60;
 
-      // FIX: When a star wraps, randomize its Y position to break up the wave pattern.
       if (posAttr.array[i * 3] > boundaryX) {
         posAttr.array[i * 3] = -boundaryX;
-        posAttr.array[i * 3 + 1] = THREE.MathUtils.randFloatSpread(size.height); // Randomize Y
+        posAttr.array[i * 3 + 1] = THREE.MathUtils.randFloatSpread(size.height);
       }
     }
     posAttr.needsUpdate = true;
@@ -81,7 +80,7 @@ function CosmicBackground({ count = 7000 }) {
 }
 
 
-// This component represents a single celestial object. (Unchanged)
+// --- CelestialObject Component --- (Unchanged)
 function CelestialObject({ object }) {
   return (
     <mesh position={[object.x, object.y, 0]}>
@@ -91,7 +90,7 @@ function CelestialObject({ object }) {
   );
 }
 
-// A performant component to render all particles. (Unchanged)
+// --- Particles Component --- (Unchanged)
 function Particles({ particles }) {
   const meshRef = useRef();
   const tempObject = useMemo(() => new THREE.Object3D(), []);
@@ -117,12 +116,17 @@ function Particles({ particles }) {
   );
 }
 
-// This component contains the main simulation logic. (Unchanged)
-function Scene({ isPaused, objects, setObjects, particles, setParticles }) {
+// --- Scene Component --- (MODIFIED)
+function Scene({ isPaused, isTabActive, objects, setObjects, particles, setParticles }) {
   const distPower = 2; const radiusPower = 3; const gravityLimiter = 4;
   useFrame((state, delta) => {
-    if (isPaused || !objects) return;
-    const timeScale = delta * 60;
+    if (isPaused || !objects || !isTabActive) return;
+
+    // MODIFICATION: Clamp the delta time to a maximum of 1/30th of a second.
+    // This prevents a massive time jump when the tab becomes active again.
+    const effectiveDelta = Math.min(delta, 1 / 30);
+    const timeScale = effectiveDelta * 60;
+
     setObjects(currentObjects => {
       const activeGravitationalObjects = currentObjects.filter(o => o.active);
       const updatedObjects = currentObjects.map(obj => {
@@ -173,18 +177,31 @@ function Scene({ isPaused, objects, setObjects, particles, setParticles }) {
   );
 }
 
-// This is the main component that holds the UI and the Canvas. (Unchanged)
+// --- Home Component --- (Unchanged)
 export default function Home() {
   const [isPaused, setPaused] = useState(false);
+  const [isTabActive, setTabActive] = useState(true);
   const [objects, setObjects] = useState(null);
   const [particles, setParticles] = useState([]);
   const containerRef = useRef(null);
   const creatingInfo = useRef({});
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      setTabActive(!document.hidden);
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
+
   useEffect(() => {
     if (containerRef.current && objects === null) {
       setObjects([ { id: 1, x: 0, y: 0, xv: 0, yv: 0, radius: 100, color: "#f8f8f8", locked: true, active: true }, { id: 2, x: -300, y: 0, xv: 0, yv: -10, radius: 25, color: "#f8f8f8", locked: false, active: true }, { id: 3, x: 300, y: 0, xv: 0, yv: 10, radius: 25, color: "#f8f8f8", locked: false, active: true }, ]);
     }
   }, []);
+
   const getMouseWorldPos = (event) => {
     const { top, left, width, height } = containerRef.current.getBoundingClientRect();
     const x = ((event.clientX - left) / width) * 2 - 1; const y = -((event.clientY - top) / height) * 2 + 1; const vec = new THREE.Vector3(x, y, 0); vec.x *= width / 2; vec.y *= height / 2; return { x: vec.x, y: vec.y };
@@ -251,25 +268,77 @@ export default function Home() {
     creatingInfo.current = {};
   };
 
+  const styles = {
+    controlsContainer: {
+      position: 'absolute',
+      top: '1rem',
+      left: '1rem',
+      display: 'flex',
+      gap: '10px',
+      padding: '0.75rem',
+      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+      borderRadius: '10px',
+      boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+      zIndex: 100,
+    },
+    button: {
+      padding: '0.9rem 1.2rem',
+      borderRadius: '6px',
+      border: 'none',
+      backgroundColor: '#007bff',
+      color: 'white',
+      fontSize: '1rem',
+      fontWeight: 'bold',
+      cursor: 'pointer',
+    },
+  };
+
   return (
-    <div style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ display: "flex", flexWrap: 'wrap', gap: "10px", margin: "5px", padding: '5px', background: 'rgba(0,0,0,0.5)', color: 'white' }}>
-        <button onClick={clearScene}>Clear</button>
-        <button onClick={() => setPaused(!isPaused)}>{isPaused ? "Unfreeze" : "Freeze"}</button>
-        <button onClick={() => { if (objects) { setObjects(prev => prev.map(obj => ({ ...obj, xv: obj.xv / 10, yv: obj.yv / 10 }))); } }}>Slow /10</button>
+    <div
+      ref={containerRef}
+      style={{
+        width: "100vw",
+        height: "100vh",
+        backgroundColor: "#282828",
+        touchAction: 'none',
+        position: 'relative'
+      }}
+      onPointerDown={handleMouseDown}
+      onPointerMove={handleMouseMove}
+      onPointerUp={handleMouseUp}
+      onContextMenu={(e) => e.preventDefault()}
+    >
+      <div style={styles.controlsContainer}>
+        <button style={styles.button} onClick={clearScene}>Clear</button>
+        <button style={styles.button} onClick={() => setPaused(!isPaused)}>
+          {isPaused ? "Unfreeze" : "Freeze"}
+        </button>
+        <button style={styles.button} onClick={() => {
+          if (objects) {
+            setObjects(prev => prev.map(obj => ({ ...obj, xv: obj.xv / 10, yv: obj.yv / 10 })));
+          }
+        }}>
+          Slow /10
+        </button>
       </div>
-      <div ref={containerRef} style={{ width: "100%", height: "100%", backgroundColor: "#282828", touchAction: 'none' }} onPointerDown={handleMouseDown} onPointerMove={handleMouseMove} onPointerUp={handleMouseUp} onContextMenu={(e) => e.preventDefault()}>
-        <Canvas orthographic camera={{ zoom: 1 }}>
-          <color attach="background" args={['#282828']} />
-          <Suspense fallback={null}>
-            {objects && <Scene isPaused={isPaused} objects={objects} setObjects={setObjects} particles={particles} setParticles={setParticles} />}
-            <CosmicBackground />
-            <EffectComposer>
-              <Bloom luminanceThreshold={0.9} luminanceSmoothing={0.025} height={400} intensity={2.5} mipmapBlur={true} />
-            </EffectComposer>
-          </Suspense>
-        </Canvas>
-      </div>
+
+      <Canvas orthographic camera={{ zoom: 1 }}>
+        <color attach="background" args={['#282828']} />
+        <Suspense fallback={null}>
+          <Scene
+            isPaused={isPaused}
+            isTabActive={isTabActive}
+            objects={objects}
+            setObjects={setObjects}
+            particles={particles}
+            setParticles={setParticles}
+          />
+          <CosmicBackground />
+          <EffectComposer>
+            <Bloom luminanceThreshold={0.9} luminanceSmoothing={0.025} height={400} intensity={2.5} mipmapBlur={true} />
+          </EffectComposer>
+        </Suspense>
+      </Canvas>
     </div>
   );
 }
