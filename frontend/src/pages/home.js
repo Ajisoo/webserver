@@ -1,32 +1,85 @@
 import React, { useState, useRef, useEffect, Suspense, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Line } from '@react-three/drei';
+import { Canvas, useFrame, extend, useThree } from '@react-three/fiber';
+import { shaderMaterial, Line } from '@react-three/drei';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import * as THREE from 'three';
 
-// Custom Starfield component for parallax movement (Unchanged)
-function ParallaxStars({ count = 5000, speed = 0.0001, factor = 5, color = '#f8f8f8', zDepth = 0 }) {
-  const meshRef = useRef();
-  const positions = useMemo(() => {
-    const pos = new Float32Array(count * 3);
+// --- Custom Shader for Per-Star Size ---
+const PointShaderMaterial = shaderMaterial(
+  { uColor: new THREE.Color('#f8f8f8') },
+  `
+    attribute float aSize;
+    void main() {
+      vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+      vec4 viewPosition = viewMatrix * modelPosition;
+      gl_Position = projectionMatrix * viewPosition;
+      gl_PointSize = aSize;
+    }
+  `,
+  `
+    uniform vec3 uColor;
+    void main() {
+      if (length(gl_PointCoord - vec2(0.5)) > 0.5) discard;
+      gl_FragColor = vec4(uColor, 0.7);
+    }
+  `
+);
+extend({ PointShaderMaterial });
+
+
+// --- Dynamic Cosmic Background ---
+function CosmicBackground({ count = 7000 }) {
+  const pointsRef = useRef();
+  const { size } = useThree();
+
+  const starData = useMemo(() => {
+    const data = [];
     for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 2000; pos[i * 3 + 1] = (Math.random() - 0.5) * 2000; pos[i * 3 + 2] = (Math.random() - 0.5) * 50 - 50 + zDepth;
+      data.push({
+        x: THREE.MathUtils.randFloatSpread(size.width), // Use size.width directly for initial spread
+        y: THREE.MathUtils.randFloatSpread(size.height),
+        z: THREE.MathUtils.randFloat(-25, -5),
+        speed: THREE.MathUtils.randFloat(0.01, 0.08),
+        size: THREE.MathUtils.randFloat(1.0, 4.0),
+      });
     }
-    return pos;
-  }, [count, zDepth]);
+    return data;
+  }, [count, size.width, size.height]);
+
+  const [positions, sizes] = useMemo(() => {
+    const pos = new Float32Array(starData.flatMap(p => [p.x, p.y, p.z]));
+    const sz = new Float32Array(starData.map(p => p.size));
+    return [pos, sz];
+  }, [starData]);
+
   useFrame((state, delta) => {
-    if (meshRef.current) {
-      meshRef.current.position.x += speed * delta * 60; meshRef.current.position.y += speed * delta * 60 * 0.5;
-      if (meshRef.current.position.x > 1000) meshRef.current.position.x = -1000; if (meshRef.current.position.y > 1000) meshRef.current.position.y = -1000;
+    const boundaryX = size.width / 2;
+    const boundaryY = size.height / 2;
+    const posAttr = pointsRef.current.geometry.attributes.position;
+
+    for (let i = 0; i < starData.length; i++) {
+      posAttr.array[i * 3] += starData[i].speed * delta * 60;
+
+      // FIX: When a star wraps, randomize its Y position to break up the wave pattern.
+      if (posAttr.array[i * 3] > boundaryX) {
+        posAttr.array[i * 3] = -boundaryX;
+        posAttr.array[i * 3 + 1] = THREE.MathUtils.randFloatSpread(size.height); // Randomize Y
+      }
     }
+    posAttr.needsUpdate = true;
   });
+
   return (
-    <points ref={meshRef}>
-      <bufferGeometry><bufferAttribute attach="attributes-position" array={positions} count={positions.length / 3} itemSize={3} /></bufferGeometry>
-      <pointsMaterial size={factor} color={color} sizeAttenuation={false} transparent opacity={0.7} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" array={positions} count={positions.length / 3} itemSize={3} />
+        <bufferAttribute attach="attributes-aSize" array={sizes} count={sizes.length} itemSize={1} />
+      </bufferGeometry>
+      <pointShaderMaterial transparent blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
     </points>
   );
 }
+
 
 // This component represents a single celestial object. (Unchanged)
 function CelestialObject({ object }) {
@@ -64,48 +117,32 @@ function Particles({ particles }) {
   );
 }
 
-// This component contains the main simulation logic.
+// This component contains the main simulation logic. (Unchanged)
 function Scene({ isPaused, objects, setObjects, particles, setParticles }) {
   const distPower = 2; const radiusPower = 3; const gravityLimiter = 4;
-
   useFrame((state, delta) => {
     if (isPaused || !objects) return;
-
     const timeScale = delta * 60;
-
     setObjects(currentObjects => {
-      // Get a list of all objects that can exert gravity.
       const activeGravitationalObjects = currentObjects.filter(o => o.active);
-
-      // Map over the current state to produce the next state.
       const updatedObjects = currentObjects.map(obj => {
-        // If the object is inactive, locked, or held, it shouldn't move. Return it as is.
-        if (!obj.active || obj.locked || obj.held) {
-          return obj;
-        }
-
-        // This object is active and can move. Calculate forces on it.
+        if (!obj.active || obj.locked || obj.held) return obj;
         let nextStep = { x: 0, y: 0 };
         activeGravitationalObjects.forEach(otherObj => {
           if (obj === otherObj) return;
           const dist = Math.hypot(otherObj.x - obj.x, otherObj.y - obj.y);
           const forceX = (otherObj.x - obj.x) / Math.pow(Math.max((obj.radius + otherObj.radius) / 4, dist), distPower) * Math.pow(otherObj.radius, radiusPower) / Math.pow(10, gravityLimiter);
           const forceY = (otherObj.y - obj.y) / Math.pow(Math.max((obj.radius + otherObj.radius) / 4, dist), distPower) * Math.pow(otherObj.radius, radiusPower) / Math.pow(10, gravityLimiter);
-          nextStep.x += forceX;
-          nextStep.y += forceY;
+          nextStep.x += forceX; nextStep.y += forceY;
         });
-
-        // Return a new object with updated physics.
         const newXv = obj.xv + nextStep.x * timeScale;
         const newYv = obj.yv + nextStep.y * timeScale;
         const newX = obj.x + newXv * timeScale;
         const newY = obj.y + newYv * timeScale;
-
         return { ...obj, xv: newXv, yv: newYv, x: newX, y: newY };
       });
       return updatedObjects;
     });
-
     setParticles(currentParticles => {
       const updatedParticles = currentParticles.filter(p => p.life > 0);
       updatedParticles.forEach(p => { p.x += p.xv * timeScale; p.y += p.yv * timeScale; p.life--; });
@@ -136,42 +173,32 @@ function Scene({ isPaused, objects, setObjects, particles, setParticles }) {
   );
 }
 
-// This is the main component that holds the UI and the Canvas.
+// This is the main component that holds the UI and the Canvas. (Unchanged)
 export default function Home() {
   const [isPaused, setPaused] = useState(false);
   const [objects, setObjects] = useState(null);
   const [particles, setParticles] = useState([]);
   const containerRef = useRef(null);
   const creatingInfo = useRef({});
-
   useEffect(() => {
     if (containerRef.current && objects === null) {
-      setObjects([
-        { id: 1, x: 0, y: 0, xv: 0, yv: 0, radius: 100, color: "#f8f8f8", locked: true, active: true },
-        { id: 2, x: -300, y: 0, xv: 0, yv: -10, radius: 25, color: "#f8f8f8", locked: false, active: true },
-        { id: 3, x: 300, y: 0, xv: 0, yv: 10, radius: 25, color: "#f8f8f8", locked: false, active: true },
-      ]);
+      setObjects([ { id: 1, x: 0, y: 0, xv: 0, yv: 0, radius: 100, color: "#f8f8f8", locked: true, active: true }, { id: 2, x: -300, y: 0, xv: 0, yv: -10, radius: 25, color: "#f8f8f8", locked: false, active: true }, { id: 3, x: 300, y: 0, xv: 0, yv: 10, radius: 25, color: "#f8f8f8", locked: false, active: true }, ]);
     }
   }, []);
-
   const getMouseWorldPos = (event) => {
     const { top, left, width, height } = containerRef.current.getBoundingClientRect();
     const x = ((event.clientX - left) / width) * 2 - 1; const y = -((event.clientY - top) / height) * 2 + 1; const vec = new THREE.Vector3(x, y, 0); vec.x *= width / 2; vec.y *= height / 2; return { x: vec.x, y: vec.y };
   };
-
   const clearScene = () => { setObjects([]); setParticles([]); };
-
   const handleMouseDown = (event) => {
     event.preventDefault(); if (!objects) return;
     const pos = getMouseWorldPos(event);
     const clickedObject = [...objects].reverse().find(obj => Math.hypot(obj.x - pos.x, obj.y - pos.y) < obj.radius);
-
     if (event.button === 0) {
       if (clickedObject) {
         creatingInfo.current = { isHolding: true, heldObject: clickedObject, moved: false };
         setObjects(prev => prev.map(o => o.id === clickedObject.id ? { ...o, held: true } : o));
       } else {
-        // FIX: Create new objects as inactive
         const newObject = { id: Date.now(), x: pos.x, y: pos.y, xv: 0, yv: 0, radius: 0, color: "#f8f8f8", locked: false, active: false };
         creatingInfo.current = { isCreating: true, startPos: pos, newObject };
         setObjects(prev => [...prev, newObject]);
@@ -182,7 +209,6 @@ export default function Home() {
       }
     }
   };
-
   const handleMouseMove = (event) => {
     if (!objects) return; const pos = getMouseWorldPos(event);
     if (creatingInfo.current.isHolding) {
@@ -202,7 +228,6 @@ export default function Home() {
       }
     }
   };
-
   const handleMouseUp = (event) => {
     if (event.button === 0) {
       if (creatingInfo.current.isHolding) {
@@ -211,12 +236,9 @@ export default function Home() {
         else { setObjects(prev => prev.map(o => o.id === heldObject.id ? { ...o, held: false } : o)); }
       } else if (creatingInfo.current.isCreating) {
         const { newObject } = creatingInfo.current;
-        // FIX: Activate the object on mouse up if it's valid
         setObjects(prev => {
           const finalObject = prev.find(o => o.id === newObject.id);
-          if (finalObject && finalObject.radius < 5) {
-            return prev.filter(o => o.id !== newObject.id);
-          }
+          if (finalObject && finalObject.radius < 5) { return prev.filter(o => o.id !== newObject.id); }
           return prev.map(o => o.id === newObject.id ? { ...o, active: true } : o);
         });
       }
@@ -241,9 +263,7 @@ export default function Home() {
           <color attach="background" args={['#282828']} />
           <Suspense fallback={null}>
             {objects && <Scene isPaused={isPaused} objects={objects} setObjects={setObjects} particles={particles} setParticles={setParticles} />}
-            <ParallaxStars count={3000} speed={0.01} factor={1.5} zDepth={-20} />
-            <ParallaxStars count={2000} speed={0.03} factor={2.5} zDepth={-10} />
-            <ParallaxStars count={1000} speed={0.05} factor={3.5} zDepth={-0} />
+            <CosmicBackground />
             <EffectComposer>
               <Bloom luminanceThreshold={0.9} luminanceSmoothing={0.025} height={400} intensity={2.5} mipmapBlur={true} />
             </EffectComposer>
