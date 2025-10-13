@@ -4,6 +4,7 @@ import TetrisPiece from './TetrisPiece';
 
 export default function TetrisGame({players, sharedBoard, currentPieces, gameOver, score, level, lines, onMove}) {
   const handleKeyPress = useCallback((event) => {
+    event.preventDefault();
     if (event.keyCode === 37) {
       // Left arrow
       onMove('left');
