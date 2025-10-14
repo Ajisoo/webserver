@@ -55,8 +55,10 @@ export default function Admin() {
 
   return (
     <div className="admin-container">
-      <div className={`status-row ${status.sadBotOnline ? 'status-row--on' : 'status-row--off'}`}>
-        <span className="status-row-name">Sad Bot</span>
+      <div style={{width:"100%", height:"100%", boxSizing: "border-box", maxWidth: "1000px"}}>
+        <div className={`status-row ${status.sadBotOnline ? 'status-row--on' : 'status-row--off'}`}>
+          <div className="status-row-name">Sad Bot</div>
+        </div>
       </div>
       <div className="status-grid">
         {status.lights.map(light => (
