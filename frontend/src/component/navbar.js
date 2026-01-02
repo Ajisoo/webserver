@@ -19,7 +19,7 @@ export default function NavBar() {
       // Example: show/hide modules based on roles
       isAdmin = roles.includes('ROLE_ADMIN');
       isUser = roles.includes('ROLE_SADBOT');
-    }
+    } catch (err) {}
   }
 
   return (
