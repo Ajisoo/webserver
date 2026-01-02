@@ -26,6 +26,7 @@ export default function Auth() {
       .then(data => {
         const oneYear = 365;
         Cookies.set('refreshToken', data.refreshToken, { expires: oneYear, secure: true, sameSite: 'strict' });
+        Cookies.remove('accessToken', { secure: true, sameSite: 'strict' });
         alert('Login successful!');
         navigate('/admin');
         window.location.reload();
