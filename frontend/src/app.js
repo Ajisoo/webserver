@@ -5,6 +5,7 @@ import Schedule from './pages/schedule';
 import Tetris from './pages/tetris';
 import Auth from './pages/auth';
 import Admin from "./pages/admin";
+import Sadbot from "./pages/sadbot";
 import NoRoute from './pages/noroute';
 import NavBar from './component/navbar';
 
