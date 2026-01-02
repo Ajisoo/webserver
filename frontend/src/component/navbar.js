@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from "react-router-dom";
 import Cookies from "js-cookie";
+import jwtDecode from 'jwt-decode';
 import './navbar.css'
 
 export default function NavBar() {
@@ -18,7 +19,7 @@ export default function NavBar() {
 
       // Example: show/hide modules based on roles
       isAdmin = roles.includes('ROLE_ADMIN');
-      isUser = roles.includes('ROLE_SADBOT');
+      isSadbot = roles.includes('ROLE_SADBOT');
     } catch (err) {}
   }
 
