@@ -17,6 +17,7 @@ export default function App() {
         <Route path="/schedule" element={<Schedule/>}/>
         <Route path="/tetris" element={<Tetris/>}/>
         <Route path="/auth" element={<Auth/>}/>
+        <Route path="/sadbot" element={<Sadbot/>}/>
         <Route path="/admin" element={<Admin/>}/>
         <Route path="*" element={<NoRoute/>}/>
       </Routes>

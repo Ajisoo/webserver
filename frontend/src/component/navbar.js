@@ -5,6 +5,22 @@ import './navbar.css'
 
 export default function NavBar() {
   const refreshToken = Cookies.get('refreshToken');
+  let isAdmin = false;
+  let isSadbot = false;
+
+  if (refreshToken) {
+    try {
+      // Decode the JWT payload (does NOT verify signature)
+      const payload = jwtDecode(refreshToken);
+
+      // Read roles
+      const roles = payload.roles || [];
+
+      // Example: show/hide modules based on roles
+      isAdmin = roles.includes('ROLE_ADMIN');
+      isUser = roles.includes('ROLE_SADBOT');
+    }
+  }
 
   return (
     <nav className="navbar"> {/* <-- Add navbar class */}
@@ -50,7 +66,20 @@ export default function NavBar() {
           </NavLink>
         </li>
 
-        {refreshToken && (
+        {isSadbot && (
+                  <li>
+                    <NavLink
+                      to="/sadbot"
+                      className={({ isActive }) =>
+                        "navbar-link" + (isActive ? " active" : "")
+                      }
+                    >
+                      Sadbot
+                    </NavLink>
+                  </li>
+                )}
+
+        {isAdmin && (
           <li>
             <NavLink
               to="/admin"
