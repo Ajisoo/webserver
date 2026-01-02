@@ -230,7 +230,7 @@ export default function Home() {
     if (!objects) return; const pos = getMouseWorldPos(event);
     if (creatingInfo.current.isHolding) {
       creatingInfo.current.moved = true;
-      setObjects(prev => prev.map(o => o.id === creatingInfo.current.heldObject.id ? { ...o, x: pos.x, y: pos.y } : o));
+      setObjects(prev => prev.map(o => o.id === creatingInfo?.current?.heldObject?.id ? { ...o, x: pos.x, y: pos.y } : o));
     } else if (creatingInfo.current.isCreating) {
       creatingInfo.current.moved = true;
       const newRadius = Math.hypot(pos.x - creatingInfo.current.startPos.x, pos.y - creatingInfo.current.startPos.y);
