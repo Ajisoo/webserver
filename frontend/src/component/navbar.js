@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from "react-router-dom";
 import Cookies from "js-cookie";
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import './navbar.css'
 
 export default function NavBar() {
