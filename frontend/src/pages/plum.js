@@ -93,7 +93,7 @@ export default function LiveStream() {
     });
 
     // Stream URL served by Spring backend
-    const streamUrl = "/stream/stream.m3u8"; // relative path; api() will add host + "/api"
+    const streamUrl = `${process.env.REACT_APP_API_HOST}/stream/stream.m3u8`; // relative path; api() will add host + "/api"
 
     hls.loadSource(streamUrl);
     hls.attachMedia(video);
