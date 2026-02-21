@@ -34,7 +34,7 @@ export default function Plum() {
     });
 
     // HLS playlist URL served by your Spring backend
-    const streamUrl = `${process.env.REACT_APP_API_HOST}/stream/stream.m3u8`;
+    const streamUrl = `/stream/stream.m3u8`;
 
     hls.loadSource(streamUrl);
     hls.attachMedia(video);
