@@ -1,18 +1,23 @@
 import React, { useEffect, useRef } from "react";
 import Hls from "hls.js";
-import api from "../util";
+import api from "../util"; // your token-refreshing helper
 
+// ----------------------
+// Custom Hls.js Loader
+// ----------------------
 class ApiLoader {
   constructor(config) {
     this.config = config;
     this.context = null;
     this.callbacks = null;
+    this.abortController = null;
   }
 
   load(context, config, callbacks) {
     this.context = context;
-    this.context.url = this.context.url.replace(`${process.env.REACT_APP_API_HOST}`, "")
     this.callbacks = callbacks;
+
+    this.abortController = new AbortController();
 
     const stats = {
       trequest: performance.now(),
@@ -22,12 +27,13 @@ class ApiLoader {
       total: 0,
     };
 
-    api(context.url, { method: "GET" })
+    // Use your api() helper which automatically refreshes tokens
+    api(context.url, {
+      method: "GET",
+      signal: this.abortController.signal,
+    })
       .then(async (response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
-        }
-
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data =
           context.responseType === "arraybuffer"
             ? await response.arrayBuffer()
@@ -38,31 +44,30 @@ class ApiLoader {
         stats.loaded = data.byteLength || data.length;
         stats.total = stats.loaded;
 
-        callbacks.onSuccess(
-          {
-            data,
-            url: context.url,
-          },
-          stats,
-          context
-        );
+        callbacks.onSuccess({ data, url: context.url }, stats, context);
       })
-      .catch((error) => {
-        callbacks.onError(
-          {
-            code: 0,
-            text: error.message,
-          },
-          context,
-          null
-        );
+      .catch((err) => {
+        // fatal error only if truly not recoverable
+        callbacks.onError({ code: 0, text: err.message }, context, null);
       });
   }
 
-  abort() {}
-  destroy() {}
+  abort() {
+    if (this.abortController) {
+      this.abortController.abort();
+    }
+  }
+
+  destroy() {
+    this.abortController = null;
+    this.context = null;
+    this.callbacks = null;
+  }
 }
 
+// ----------------------
+// React Component
+// ----------------------
 export default function LiveStream() {
   const videoRef = useRef(null);
 
@@ -71,15 +76,21 @@ export default function LiveStream() {
     if (!video) return;
 
     const hls = new Hls({
-      loader: ApiLoader,
+      loader: ApiLoader,      // custom loader using your api()
       enableWorker: true,
-      liveSyncDurationCount: 3,
+      liveSyncDurationCount: 3, // low-latency live
+      maxBufferLength: 30,
     });
 
-    const streamUrl = `${process.env.REACT_APP_API_HOST}/stream/stream.m3u8`;
+    // Stream URL served by Spring backend
+    const streamUrl = "/stream/stream.m3u8"; // relative path; api() will add host + "/api"
 
     hls.loadSource(streamUrl);
     hls.attachMedia(video);
+
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      video.play().catch(console.error);
+    });
 
     hls.on(Hls.Events.ERROR, (event, data) => {
       console.error("HLS error:", data);
