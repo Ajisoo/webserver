@@ -6,17 +6,20 @@ class ApiLoader {
   constructor(config) {
     this.config = config;
     this.abortController = null;
+    this.stats = null;   // 🔴 REQUIRED
   }
 
   load(context, config, callbacks) {
     this.abortController = new AbortController();
 
-    const stats = {
+    this.stats = {
+      aborted: false,
+      loaded: 0,
+      total: 0,
+      retry: 0,
       trequest: performance.now(),
       tfirst: 0,
       tload: 0,
-      loaded: 0,
-      total: 0,
     };
 
     api(context.url, {
@@ -31,19 +34,19 @@ class ApiLoader {
             ? await response.arrayBuffer()
             : await response.text();
 
-        stats.tfirst = performance.now();
-        stats.tload = performance.now();
-        stats.loaded = data.byteLength || data.length;
-        stats.total = stats.loaded;
+        this.stats.tfirst = performance.now();
+        this.stats.tload = performance.now();
+        this.stats.loaded = data.byteLength || data.length;
+        this.stats.total = this.stats.loaded;
 
         callbacks.onSuccess(
           {
             data,
             url: response.url,
           },
-          stats,
+          this.stats,
           context,
-          response // 👈 IMPORTANT: networkDetails must NOT be null
+          response
         );
       })
       .catch((err) => {
@@ -60,11 +63,14 @@ class ApiLoader {
 
   abort() {
     if (this.abortController) {
+      this.stats.aborted = true;
       this.abortController.abort();
     }
   }
 
-  destroy() {}
+  destroy() {
+    this.abortController = null;
+  }
 }
 
 // ----------------------
