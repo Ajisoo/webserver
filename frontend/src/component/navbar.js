@@ -92,6 +92,18 @@ export default function NavBar() {
             </NavLink>
           </li>
         )}
+        {isAdmin && (
+                  <li>
+                    <NavLink
+                      to="/plum"
+                      className={({ isActive }) =>
+                        "navbar-link" + (isActive ? " active" : "")
+                      }
+                    >
+                      Plum
+                    </NavLink>
+                  </li>
+                )}
       </ul>
     </nav>
   );
