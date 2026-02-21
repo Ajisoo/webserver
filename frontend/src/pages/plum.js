@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import Hls from "hls.js";
-import api from "./api";
+import api from "../util";
 
 class ApiLoader {
   constructor(config) {
