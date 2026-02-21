@@ -1,11 +1,7 @@
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import Hls from "hls.js";
 import api from "../util";
 
-/**
- * Custom Hls.js loader that uses the api() helper
- * to automatically handle access token refresh for every request
- */
 class ApiLoader extends Hls.DefaultConfig.loader {
   load(context, config, callbacks) {
     const url = context.url;
