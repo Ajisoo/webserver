@@ -84,10 +84,12 @@ export default function LiveStream() {
     if (!video) return;
 
     const hls = new Hls({
-      loader: ApiLoader,      // custom loader using your api()
-      enableWorker: true,
-      liveSyncDurationCount: 3, // low-latency live
-      maxBufferLength: 30,
+      xhrSetup: function (xhr, url) {
+        const token = Cookies.get("accessToken");
+        if (token) {
+          xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+        }
+      }
     });
 
     // Stream URL served by Spring backend
