@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import Hls from "hls.js";
-import api from "./api"; // your token-refreshing helper
+import api from "../util";
 
 /**
  * Custom Hls.js loader that uses the api() helper
