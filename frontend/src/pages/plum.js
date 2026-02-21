@@ -1,12 +1,18 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import Hls from "hls.js";
-import api from "../util";
+import api from "./api";
 
-class ApiLoader extends Hls.DefaultConfig.loader {
+class ApiLoader {
+  constructor(config) {
+    this.config = config;
+    this.context = null;
+    this.callbacks = null;
+  }
+
   load(context, config, callbacks) {
-    const fullUrl = context.url;
-    const url = new URL(fullUrl);
-    const path = url.pathname.replace("/api", "") + url.search;
+    this.context = context;
+    this.context.url = this.context.url.replace(`${process.env.REACT_APP_API_HOST}`, "")
+    this.callbacks = callbacks;
 
     const stats = {
       trequest: performance.now(),
@@ -16,38 +22,48 @@ class ApiLoader extends Hls.DefaultConfig.loader {
       total: 0,
     };
 
-    api(path, { method: "GET" })
+    api(context.url, { method: "GET" })
       .then(async (response) => {
         if (!response.ok) {
-          throw new Error(`Failed to fetch ${path}, status ${response.status}`);
+          throw new Error(`HTTP ${response.status}`);
         }
 
-        let data;
+        const data =
+          context.responseType === "arraybuffer"
+            ? await response.arrayBuffer()
+            : await response.text();
 
-        // 👇 IMPORTANT: manifest must be text
-        if (path.endsWith(".m3u8")) {
-          data = await response.text();
-          stats.loaded = stats.total = data.length;
-        } else {
-          data = await response.arrayBuffer();
-          stats.loaded = stats.total = data.byteLength;
-        }
+        stats.tfirst = performance.now();
+        stats.tload = performance.now();
+        stats.loaded = data.byteLength || data.length;
+        stats.total = stats.loaded;
 
-        stats.tfirst = stats.tload = performance.now();
-
-        callbacks.onSuccess({ data }, stats, context);
+        callbacks.onSuccess(
+          {
+            data,
+            url: context.url,
+          },
+          stats,
+          context
+        );
       })
-      .catch((err) => {
+      .catch((error) => {
         callbacks.onError(
-          { code: 0, text: err.message },
+          {
+            code: 0,
+            text: error.message,
+          },
           context,
           null
         );
       });
   }
+
+  abort() {}
+  destroy() {}
 }
 
-export default function Plum() {
+export default function LiveStream() {
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -55,13 +71,11 @@ export default function Plum() {
     if (!video) return;
 
     const hls = new Hls({
-      loader: ApiLoader,       // use custom loader
+      loader: ApiLoader,
       enableWorker: true,
-      liveSyncDurationCount: 3, // low-latency live stream
-      maxBufferLength: 30,      // keep ~30s of segments in memory
+      liveSyncDurationCount: 3,
     });
 
-    // HLS playlist URL served by your Spring backend
     const streamUrl = `${process.env.REACT_APP_API_HOST}/stream/stream.m3u8`;
 
     hls.loadSource(streamUrl);
@@ -71,22 +85,10 @@ export default function Plum() {
       console.error("HLS error:", data);
     });
 
-    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-      video.play().catch((err) => console.error("Video play failed:", err));
-    });
-
-    // Clean up on unmount
     return () => {
       hls.destroy();
     };
   }, []);
 
-  return (
-    <video
-      ref={videoRef}
-      controls
-      autoPlay
-      style={{ width: "100%", maxWidth: 640 }}
-    />
-  );
+  return <video ref={videoRef} controls autoPlay style={{ width: "100%" }} />;
 }
