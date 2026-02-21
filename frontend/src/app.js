@@ -6,6 +6,7 @@ import Tetris from './pages/tetris';
 import Auth from './pages/auth';
 import Admin from "./pages/admin";
 import Sadbot from "./pages/sadbot";
+import Plum from "./pages/plum";
 import NoRoute from './pages/noroute';
 import NavBar from './component/navbar';
 
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/auth" element={<Auth/>}/>
         <Route path="/sadbot" element={<Sadbot/>}/>
         <Route path="/admin" element={<Admin/>}/>
+        <Route path="/plum" elemtn={<Plum/>}/>
         <Route path="*" element={<NoRoute/>}/>
       </Routes>
     </>
