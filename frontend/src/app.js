@@ -21,7 +21,7 @@ export default function App() {
         <Route path="/auth" element={<Auth/>}/>
         <Route path="/sadbot" element={<Sadbot/>}/>
         <Route path="/admin" element={<Admin/>}/>
-        <Route path="/plum" elemtn={<Plum/>}/>
+        <Route path="/plum" element={<Plum/>}/>
         <Route path="*" element={<NoRoute/>}/>
       </Routes>
     </>
