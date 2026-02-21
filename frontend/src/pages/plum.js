@@ -2,21 +2,13 @@ import React, { useEffect, useRef } from "react";
 import Hls from "hls.js";
 import api from "../util"; // your token-refreshing helper
 
-// ----------------------
-// Custom Hls.js Loader
-// ----------------------
 class ApiLoader {
   constructor(config) {
     this.config = config;
-    this.context = null;
-    this.callbacks = null;
     this.abortController = null;
   }
 
   load(context, config, callbacks) {
-    this.context = context;
-    this.callbacks = callbacks;
-
     this.abortController = new AbortController();
 
     const stats = {
@@ -27,13 +19,13 @@ class ApiLoader {
       total: 0,
     };
 
-    // Use your api() helper which automatically refreshes tokens
     api(context.url, {
       method: "GET",
       signal: this.abortController.signal,
     })
       .then(async (response) => {
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
         const data =
           context.responseType === "arraybuffer"
             ? await response.arrayBuffer()
@@ -44,11 +36,25 @@ class ApiLoader {
         stats.loaded = data.byteLength || data.length;
         stats.total = stats.loaded;
 
-        callbacks.onSuccess({ data, url: context.url }, stats, context);
+        callbacks.onSuccess(
+          {
+            data,
+            url: response.url,
+          },
+          stats,
+          context,
+          response // 👈 IMPORTANT: networkDetails must NOT be null
+        );
       })
       .catch((err) => {
-        // fatal error only if truly not recoverable
-        callbacks.onError({ code: 0, text: err.message }, context, null);
+        callbacks.onError(
+          {
+            code: err.status || 0,
+            text: err.message,
+          },
+          context,
+          null
+        );
       });
   }
 
@@ -58,11 +64,7 @@ class ApiLoader {
     }
   }
 
-  destroy() {
-    this.abortController = null;
-    this.context = null;
-    this.callbacks = null;
-  }
+  destroy() {}
 }
 
 // ----------------------
