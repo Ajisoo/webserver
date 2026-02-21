@@ -139,6 +139,7 @@ export default function LiveStream() {
            <video
              ref={videoRef}
              autoPlay
+             controls
              style={{
                width: "100%",
                height: "100%",
