@@ -4,17 +4,45 @@ import api from "../util";
 
 class ApiLoader extends Hls.DefaultConfig.loader {
   load(context, config, callbacks) {
-    const url = context.url;
+    const fullUrl = context.url;
+    const url = new URL(fullUrl);
+    const path = url.pathname + url.search;
 
-    api(url, { method: "GET" })
+    const stats = {
+      trequest: performance.now(),
+      tfirst: 0,
+      tload: 0,
+      loaded: 0,
+      total: 0,
+    };
+
+    api(path, { method: "GET" })
       .then(async (response) => {
-        if (!response.ok) throw new Error(`Failed to fetch ${url}, status ${response.status}`);
-        const arrayBuffer = await response.arrayBuffer();
-        // feed hls.js
-        callbacks.onSuccess({ data: arrayBuffer }, 0, 0);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch ${path}, status ${response.status}`);
+        }
+
+        let data;
+
+        // 👇 IMPORTANT: manifest must be text
+        if (path.endsWith(".m3u8")) {
+          data = await response.text();
+          stats.loaded = stats.total = data.length;
+        } else {
+          data = await response.arrayBuffer();
+          stats.loaded = stats.total = data.byteLength;
+        }
+
+        stats.tfirst = stats.tload = performance.now();
+
+        callbacks.onSuccess({ data }, stats, context);
       })
       .catch((err) => {
-        callbacks.onError({ code: 0, text: err.message }, context, null);
+        callbacks.onError(
+          { code: 0, text: err.message },
+          context,
+          null
+        );
       });
   }
 }
@@ -38,6 +66,10 @@ export default function Plum() {
 
     hls.loadSource(streamUrl);
     hls.attachMedia(video);
+
+    hls.on(Hls.Events.ERROR, (event, data) => {
+      console.error("HLS error:", data);
+    });
 
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
       video.play().catch((err) => console.error("Video play failed:", err));
