@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import Hls from "hls.js";
 import Cookies from 'js-cookie';
-import api from "../util"; // your token-refreshing helper
+import api, {handleTokenRefresh} from "../util"; // your token-refreshing helper
 
 class ApiLoader {
   constructor(config) {

@@ -6,7 +6,7 @@ export const api_host = process.env.REACT_APP_API_HOST;
 // from being sent at the same time if multiple API calls fail at once.
 let refreshTokenPromise = null;
 
-const handleTokenRefresh = async () => {
+export const handleTokenRefresh = async () => {
   const refreshToken = Cookies.get('refreshToken');
 
   if (!refreshToken) {
