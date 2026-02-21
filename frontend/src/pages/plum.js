@@ -85,7 +85,7 @@ export default function LiveStream() {
     if (!video) return;
 
     const hls = new Hls({
-      xhrSetup: function (xhr, url) {
+      xhrSetup: function (xhr) {
         const token = Cookies.get("accessToken");
         if (token) {
           xhr.setRequestHeader("Authorization", `Bearer ${token}`);
@@ -93,8 +93,7 @@ export default function LiveStream() {
       }
     });
 
-    // Stream URL served by Spring backend
-    const streamUrl = `${process.env.REACT_APP_API_HOST}/stream/stream.m3u8`; // relative path; api() will add host + "/api"
+    const streamUrl = `${process.env.REACT_APP_API_HOST}/stream/stream.m3u8`;
 
     hls.loadSource(streamUrl);
     hls.attachMedia(video);
@@ -103,8 +102,27 @@ export default function LiveStream() {
       video.play().catch(console.error);
     });
 
-    hls.on(Hls.Events.ERROR, (event, data) => {
+    hls.on(Hls.Events.ERROR, async (event, data) => {
       console.error("HLS error:", data);
+
+      // Only care about 401 network errors
+      if (
+        data.type === Hls.ErrorTypes.NETWORK_ERROR &&
+        data.response?.code === 401
+      ) {
+        try {
+          console.log("Token expired. Refreshing...");
+
+          await handleTokenRefresh();
+
+          console.log("Retrying stream...");
+
+          hls.startLoad();
+        } catch (err) {
+          console.error("Refresh failed. Destroying HLS.");
+          hls.destroy();
+        }
+      }
     });
 
     return () => {
@@ -112,5 +130,21 @@ export default function LiveStream() {
     };
   }, []);
 
-  return <video ref={videoRef} controls autoPlay style={{ width: "100%" }} />;
+  return <div style={{
+           width: "100vw",
+           height: "100vh",
+           overflow: "hidden",
+           margin: 0,
+         }}>
+           <video
+             ref={videoRef}
+             controls
+             autoPlay
+             style={{
+               width: "100%",
+               height: "100%",
+               objectFit: "contain" // or "cover"
+             }}
+           />
+         </div>
 }
