@@ -54,9 +54,12 @@ export default async function api(path, options = {}) {
   // 1. Get the current access token and add it to the request headers.
   const accessToken = Cookies.get('accessToken');
   const headers = {
-    'Content-Type': 'application/json',
     ...options.headers,
   };
+
+  if (options.body && !headers['Content-Type']) {
+    headers['Content-Type'] = 'application/json';
+  }
 
   if (accessToken) {
     headers['Authorization'] = `Bearer ${accessToken}`;
