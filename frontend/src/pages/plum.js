@@ -6,7 +6,7 @@ class ApiLoader extends Hls.DefaultConfig.loader {
   load(context, config, callbacks) {
     const fullUrl = context.url;
     const url = new URL(fullUrl);
-    const path = url.pathname + url.search;
+    const path = url.pathname + url.search.replace("/api", "");
 
     const stats = {
       trequest: performance.now(),
