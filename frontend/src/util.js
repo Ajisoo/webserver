@@ -66,7 +66,7 @@ export default async function api(path, options = {}) {
   }
 
   // 2. Make the initial API request.
-  let response = await fetch(api_host + path, {...options, headers});
+  let response = await fetch(api_host + path, {...options, headers, credentials: 'include'});
 
   // 3. If the response is a 401, the access token has likely expired.
   if (response.status === 401) {
@@ -84,7 +84,7 @@ export default async function api(path, options = {}) {
 
       // 4. Retry the original request with the new token.
       headers['Authorization'] = `Bearer ${newAccessToken}`;
-      response = await fetch(api_host + path, {...options, headers});
+      response = await fetch(api_host + path, {...options, headers, credentials: 'include'});
 
     } catch (error) {
       // This will catch errors from handleTokenRefresh (e.g., invalid refresh token).
