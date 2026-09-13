@@ -31,9 +31,9 @@ function AppContent() {
         <Route path="/admin" element={<Admin/>}/>
         <Route path="/plum" element={<Plum/>}/>
 
-        <Route path="/secret/1" element={<Apple paintingId={1}/>}/>
-        <Route path="/secret/2" element={<Apple paintingId={2}/>}/>
-        <Route path="/secret/3" element={<Apple paintingId={3}/>}/>
+        <Route path="/secret/cb3342ad-2ded-404a-9dc0-abdf0176f37a" element={<Apple paintingId={1}/>}/>
+        <Route path="/secret/bf362b9b-27e8-4af9-a177-61570cf53839" element={<Apple paintingId={2}/>}/>
+        <Route path="/secret/322055e1-57d0-4eb7-b33d-d9084d6cdf3f" element={<Apple paintingId={3}/>}/>
         <Route path="/secret/leaderboard" element={<AppleLeaderboard/>}/>
 
         <Route path="*" element={<NoRoute/>}/>
