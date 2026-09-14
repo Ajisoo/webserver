@@ -1,0 +1,417 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Inter:wght@400;500&display=swap');
+
+:root {
+  --paper: #f1eee6;
+  --ink: #292824;
+  --muted: #969289;
+  --line: #c8c4ba;
+  --apple: #9f302d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--paper);
+}
+
+/* --------------------------------------------------
+   Page
+-------------------------------------------------- */
+
+.apple-page {
+  min-height: 100dvh;
+  width: 100%;
+
+  position: relative;
+  overflow: hidden;
+
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/*
+ * Very subtle paper texture.
+ * It should be almost imperceptible.
+ */
+.apple-page::before {
+  content: '';
+
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  opacity: 0.035;
+
+  background-image:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+}
+
+/* --------------------------------------------------
+   Main layout
+-------------------------------------------------- */
+
+.apple-content {
+  position: relative;
+  z-index: 2;
+
+  width: min(680px, calc(100% - 48px));
+  min-height: 100dvh;
+
+  margin: 0 auto;
+
+  padding-top: 11vh;
+  padding-bottom: 8vh;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* --------------------------------------------------
+   Apple symbol
+-------------------------------------------------- */
+
+.apple-symbol {
+  width: 44px;
+  height: 52px;
+
+  position: relative;
+
+  margin-left: 2px;
+  margin-bottom: 10vh;
+}
+
+.apple-fruit {
+  position: absolute;
+
+  width: 31px;
+  height: 29px;
+
+  left: 4px;
+  top: 17px;
+
+  background: var(--apple);
+
+  border-radius:
+    48% 52% 48% 52% /
+    52% 50% 50% 48%;
+
+  transform: rotate(-8deg);
+}
+
+.apple-fruit::after {
+  content: '';
+
+  position: absolute;
+
+  width: 25px;
+  height: 26px;
+
+  left: 12px;
+  top: -1px;
+
+  border-radius: 50%;
+
+  background: var(--paper);
+}
+
+.apple-stem {
+  position: absolute;
+
+  width: 2px;
+  height: 13px;
+
+  left: 23px;
+  top: 5px;
+
+  background: var(--ink);
+
+  transform: rotate(14deg);
+}
+
+.apple-leaf {
+  position: absolute;
+
+  width: 12px;
+  height: 7px;
+
+  left: 25px;
+  top: 5px;
+
+  border-radius: 100% 0 100% 0;
+
+  background: var(--ink);
+
+  transform: rotate(-16deg);
+}
+
+/* --------------------------------------------------
+   Writing
+-------------------------------------------------- */
+
+.apple-text {
+  max-width: 570px;
+
+  font-family:
+    'Cormorant Garamond',
+    Georgia,
+    serif;
+
+  font-size: clamp(26px, 4.6vw, 35px);
+  font-weight: 400;
+  line-height: 1.28;
+
+  letter-spacing: -0.012em;
+}
+
+.apple-text p {
+  margin: 0 0 0.68em;
+}
+
+.apple-text p:last-child {
+  margin-bottom: 0;
+}
+
+/* --------------------------------------------------
+   Completion section
+-------------------------------------------------- */
+
+.apple-completion {
+  margin-top: auto;
+  padding-top: 13vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  gap: 30px;
+}
+
+/* 1 ━━━ 2 ━━━ 3 */
+
+.apple-sequence {
+  display: flex;
+  align-items: center;
+
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+
+  color: var(--muted);
+}
+
+.sequence-number {
+  display: inline-flex;
+
+  width: 14px;
+  height: 14px;
+
+  align-items: center;
+  justify-content: center;
+}
+
+.sequence-line {
+  width: 32px;
+  height: 1px;
+
+  background: var(--ink);
+
+  opacity: 0.65;
+}
+
+/* --------------------------------------------------
+   Completion button
+-------------------------------------------------- */
+
+.apple-button {
+  appearance: none;
+
+  border: 0;
+  border-bottom: 1px solid var(--ink);
+
+  margin: 0;
+  padding: 0 0 7px;
+
+  background: transparent;
+  color: var(--ink);
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+
+  letter-spacing: 0.08em;
+
+  transition:
+    gap 250ms ease,
+    opacity 200ms ease;
+}
+
+.apple-button:hover {
+  gap: 23px;
+}
+
+.apple-button:active {
+  opacity: 0.45;
+}
+
+.button-arrow {
+  font-size: 16px;
+  line-height: 10px;
+}
+
+/* --------------------------------------------------
+   Abstract geometry
+-------------------------------------------------- */
+
+.geometry {
+  position: absolute;
+
+  pointer-events: none;
+
+  border: 1px solid var(--line);
+
+  opacity: 0.28;
+}
+
+.geometry-circle {
+  width: 460px;
+  height: 460px;
+
+  right: -285px;
+  top: 17%;
+
+  border-radius: 50%;
+}
+
+.geometry-square {
+  width: 230px;
+  height: 230px;
+
+  left: -170px;
+  bottom: 11%;
+
+  transform: rotate(45deg);
+}
+
+.geometry-square::after {
+  content: '';
+
+  position: absolute;
+
+  width: 325px;
+  height: 1px;
+
+  left: -47px;
+  top: 114px;
+
+  background: var(--line);
+
+  transform: rotate(-45deg);
+}
+
+/* --------------------------------------------------
+   Loading
+-------------------------------------------------- */
+
+.apple-loading {
+  min-height: 100dvh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 30px;
+
+  color: var(--muted);
+}
+
+.apple-loading span {
+  animation: breathe 1.5s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+/* --------------------------------------------------
+   Error
+-------------------------------------------------- */
+
+.apple-error {
+  min-height: 100dvh;
+
+  padding: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+
+  text-align: center;
+}
+
+/* --------------------------------------------------
+   Mobile
+-------------------------------------------------- */
+
+@media (max-width: 600px) {
+  .apple-content {
+    width: calc(100% - 40px);
+
+    padding-top: 8vh;
+    padding-bottom: 6vh;
+  }
+
+  .apple-symbol {
+    margin-bottom: 9vh;
+  }
+
+  .apple-text {
+    font-size: 28px;
+    line-height: 1.27;
+  }
+
+  .apple-completion {
+    padding-top: 10vh;
+  }
+
+  .geometry-circle {
+    width: 310px;
+    height: 310px;
+
+    right: -225px;
+    top: 20%;
+  }
+
+  .geometry-square {
+    width: 170px;
+    height: 170px;
+
+    left: -125px;
+  }
+}

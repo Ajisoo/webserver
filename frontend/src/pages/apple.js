@@ -1,8 +1,31 @@
-import React, {useEffect, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../util';
+import './Apple.css';
 
-export default function Apple({paintingId}) {
+const APPLE_TEXT = {
+  1: [
+    'Congratulations.',
+    'You have discovered something.',
+    'Whether that something was worth discovering remains unclear.',
+    'Nevertheless, somewhere, someone is keeping track.'
+  ],
+
+  2: [
+    'You may believe you found it.',
+    'You may believe you were led here.',
+    'These are not necessarily different things.'
+  ],
+
+  3: [
+    'You have found them all.',
+    'This is an achievement of questionable significance.',
+    'Nevertheless, achievements must be recorded.',
+    'Proceed accordingly.'
+  ]
+};
+
+export default function Apple({ paintingId }) {
   const [status, setStatus] = useState(null);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -15,6 +38,7 @@ export default function Apple({paintingId}) {
         if (!response.ok) {
           throw new Error('Unable to record painting visit.');
         }
+
         return response.json();
       })
       .then(data => {
@@ -26,27 +50,74 @@ export default function Apple({paintingId}) {
   }, [paintingId]);
 
   if (error) {
-    return <div style={{padding: '10px'}}>{error}</div>;
+    return (
+      <main className="apple-page">
+        <div className="apple-error">
+          {error}
+        </div>
+      </main>
+    );
   }
 
   if (!status) {
-    return <div style={{padding: '10px'}}>Loading...</div>;
+    return (
+      <main className="apple-page">
+        <div className="apple-loading">
+          <span>·</span>
+        </div>
+      </main>
+    );
   }
 
+  const text = APPLE_TEXT[paintingId] || APPLE_TEXT[1];
+
   return (
-    <div style={{padding: '10px'}}>
-      <h1>Painting {paintingId}</h1>
-      <p>Placeholder content for now.</p>
+    <main className="apple-page">
 
-      <p>
-        You've found {status.visited.length} of 3 paintings.
-      </p>
+      {/* Subtle abstract geometry */}
+      <div className="geometry geometry-circle" />
+      <div className="geometry geometry-square" />
 
-      {status.complete && (
-        <button onClick={() => navigate('/secret/leaderboard')}>
-          Enter the leaderboard
-        </button>
-      )}
-    </div>
+      <div className="apple-content">
+
+        {/* Small apple mark */}
+        <div className="apple-symbol" aria-hidden="true">
+          <div className="apple-stem" />
+          <div className="apple-leaf" />
+          <div className="apple-fruit" />
+        </div>
+
+        {/* Main writing */}
+        <section className="apple-text">
+          {text.map((line, index) => (
+            <p key={index}>{line}</p>
+          ))}
+        </section>
+
+        {/* Only the final painting has an action */}
+        {status.complete && (
+          <div className="apple-completion">
+
+            <div className="apple-sequence" aria-label="All three found">
+              <span className="sequence-number">1</span>
+              <span className="sequence-line" />
+              <span className="sequence-number">2</span>
+              <span className="sequence-line" />
+              <span className="sequence-number">3</span>
+            </div>
+
+            <button
+              className="apple-button"
+              onClick={() => navigate('/secret/leaderboard')}
+            >
+              <span>Record your achievement</span>
+              <span className="button-arrow">→</span>
+            </button>
+
+          </div>
+        )}
+
+      </div>
+    </main>
   );
 }
