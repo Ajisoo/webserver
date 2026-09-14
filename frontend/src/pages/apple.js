@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../util';
-import './Apple.css';
+import './apple.css';
 
 const APPLE_TEXT = {
   1: [
