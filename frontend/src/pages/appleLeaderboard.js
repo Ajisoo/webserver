@@ -72,7 +72,7 @@ export default function AppleLeaderboard() {
         </div>
 
         <header className="record-header">
-          <div className="record-label">THE RECORD</div>
+          <div className="record-label">THE HALL OF FAME</div>
 
           <h1>
             Some achievements<br />
@@ -84,9 +84,9 @@ export default function AppleLeaderboard() {
           <section className="record-entry">
 
             <p className="record-introduction">
-              You have found them all.
+              You have discovered 3 apples.
               <br />
-              It is now necessary to provide a name.
+              Go ahead and provide your name.
             </p>
 
             <div className="record-form">
@@ -104,7 +104,7 @@ export default function AppleLeaderboard() {
               />
 
               <button onClick={handleComplete}>
-                <span>Enter the record</span>
+                <span>Enter the Hall of Fame</span>
                 <span className="record-arrow">→</span>
               </button>
             </div>

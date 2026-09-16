@@ -6,22 +6,20 @@ import './apple.css';
 const APPLE_TEXT = {
   1: [
     'Congratulations.',
-    'You have discovered something.',
-    'Whether that something was worth discovering remains unclear.',
-    'Nevertheless, somewhere, someone is keeping track.'
+    'You have discovered an apple.',
+    'Maybe you can discover more.'
   ],
 
   2: [
-    'You may believe you found it.',
-    'You may believe you were led here.',
-    'These are not necessarily different things.'
+    'You have found another apple.',
+    'You are making progress.',
+    'Perhaps there is a third.'
   ],
 
   3: [
-    'You have found them all.',
-    'This is an achievement of questionable significance.',
-    'Nevertheless, achievements must be recorded.',
-    'Proceed accordingly.'
+    'You have found 3 apples.',
+    'This is an achievement of significance.',
+    'And achievements must be recorded.',
   ]
 };
 
