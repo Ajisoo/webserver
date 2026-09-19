@@ -7,7 +7,7 @@ const APPLE_TEXT = {
   1: [
     'Congratulations.',
     'You have discovered an apple.',
-    'Maybe you can discover more.'
+    'Maybe you can discover another.'
   ],
 
   2: [
@@ -18,7 +18,7 @@ const APPLE_TEXT = {
 
   3: [
     'You have found 3 apples.',
-    'This is an achievement of significance.',
+    'This is an achievement of great significance.',
     'And achievements must be recorded.',
   ]
 };
@@ -67,7 +67,9 @@ export default function Apple({ paintingId }) {
     );
   }
 
-  const text = APPLE_TEXT[paintingId] || APPLE_TEXT[1];
+  const numFound = status?.visited.length
+
+  const text = APPLE_TEXT[numFound] || APPLE_TEXT[1];
 
   return (
     <main className="apple-page">
@@ -92,18 +94,32 @@ export default function Apple({ paintingId }) {
           ))}
         </section>
 
-        {/* Only the final painting has an action */}
+        {/* Apple progress sequence */}
+        <div className="apple-sequence" aria-label={`${numFound} of 3 apples found`}>
+          {[1, 2, 3].map((number, index) => (
+            <React.Fragment key={number}>
+              <span
+                className={`sequence-number ${
+                  number <= numFound ? 'collected' : 'uncollected'
+                }`}
+              >
+                {number}
+              </span>
+
+              {index < 2 && (
+                <span
+                  className={`sequence-line ${
+                    number < numFound ? 'collected' : 'uncollected'
+                  }`}
+                />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+
+        {/* Only show the action after all three have been found */}
         {status.complete && (
           <div className="apple-completion">
-
-            <div className="apple-sequence" aria-label="All three found">
-              <span className="sequence-number">1</span>
-              <span className="sequence-line" />
-              <span className="sequence-number">2</span>
-              <span className="sequence-line" />
-              <span className="sequence-number">3</span>
-            </div>
-
             <button
               className="apple-button"
               onClick={() => navigate('/secret/leaderboard')}
@@ -111,7 +127,6 @@ export default function Apple({ paintingId }) {
               <span>Record your achievement</span>
               <span className="button-arrow">→</span>
             </button>
-
           </div>
         )}
 
