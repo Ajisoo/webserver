@@ -80,20 +80,6 @@ export default function Apple({ paintingId }) {
 
       <div className="apple-content">
 
-        {/* Small apple mark */}
-        <div className="apple-symbol" aria-hidden="true">
-          <div className="apple-stem" />
-          <div className="apple-leaf" />
-          <div className="apple-fruit" />
-        </div>
-
-        {/* Main writing */}
-        <section className="apple-text">
-          {text.map((line, index) => (
-            <p key={index}>{line}</p>
-          ))}
-        </section>
-
         {/* Apple progress sequence */}
         <div className="apple-sequence" aria-label={`${numFound} of 3 apples found`}>
           {[1, 2, 3].map((number, index) => (
@@ -116,6 +102,20 @@ export default function Apple({ paintingId }) {
             </React.Fragment>
           ))}
         </div>
+
+        {/* Small apple mark */}
+        <div className="apple-symbol" aria-hidden="true">
+          <div className="apple-stem" />
+          <div className="apple-leaf" />
+          <div className="apple-fruit" />
+        </div>
+
+        {/* Main writing */}
+        <section className="apple-text">
+          {text.map((line, index) => (
+            <p key={index}>{line}</p>
+          ))}
+        </section>
 
         {/* Only show the action after all three have been found */}
         {status.complete && (

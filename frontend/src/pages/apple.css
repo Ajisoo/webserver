@@ -196,7 +196,17 @@ body {
   gap: 30px;
 }
 
-/* 1 ━━━ 2 ━━━ 3 */
+/* --------------------------------------------------
+   Apple sequence
+-------------------------------------------------- */
+
+/*
+ * 1 ━━━ 2 ━━━ 3
+ *
+ * The sequence is always displayed.
+ * Collected items are dark.
+ * Uncollected items are lighter gray.
+ */
 
 .apple-sequence {
   display: flex;
@@ -205,9 +215,9 @@ body {
   font-family: 'Inter', sans-serif;
   font-size: 9px;
   letter-spacing: 0.12em;
-
-  color: var(--muted);
 }
+
+/* Numbers */
 
 .sequence-number {
   display: inline-flex;
@@ -217,15 +227,37 @@ body {
 
   align-items: center;
   justify-content: center;
+
+  color: var(--muted);
+
+  transition: color 250ms ease;
 }
+
+.sequence-number.collected {
+  color: var(--ink);
+}
+
+.sequence-number.uncollected {
+  color: var(--line);
+}
+
+/* Connecting lines */
 
 .sequence-line {
   width: 32px;
   height: 1px;
 
-  background: var(--ink);
+  background: var(--line);
 
-  opacity: 0.65;
+  transition: background-color 250ms ease;
+}
+
+.sequence-line.collected {
+  background: var(--ink);
+}
+
+.sequence-line.uncollected {
+  background: var(--line);
 }
 
 /* --------------------------------------------------
