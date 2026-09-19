@@ -67,8 +67,7 @@ export default function Apple({ paintingId }) {
     );
   }
 
-  const numFound = status?.visited.length
-
+  const numFound = status.visited.length;
   const text = APPLE_TEXT[numFound] || APPLE_TEXT[1];
 
   return (
@@ -79,29 +78,6 @@ export default function Apple({ paintingId }) {
       <div className="geometry geometry-square" />
 
       <div className="apple-content">
-
-        {/* Apple progress sequence */}
-        <div className="apple-sequence" aria-label={`${numFound} of 3 apples found`}>
-          {[1, 2, 3].map((number, index) => (
-            <React.Fragment key={number}>
-              <span
-                className={`sequence-number ${
-                  number <= numFound ? 'collected' : 'uncollected'
-                }`}
-              >
-                {number}
-              </span>
-
-              {index < 2 && (
-                <span
-                  className={`sequence-line ${
-                    number < numFound ? 'collected' : 'uncollected'
-                  }`}
-                />
-              )}
-            </React.Fragment>
-          ))}
-        </div>
 
         {/* Small apple mark */}
         <div className="apple-symbol" aria-hidden="true">
@@ -117,9 +93,37 @@ export default function Apple({ paintingId }) {
           ))}
         </section>
 
-        {/* Only show the action after all three have been found */}
-        {status.complete && (
-          <div className="apple-completion">
+        {/* Bottom progress area */}
+        <div className="apple-progress">
+
+          {/* Apple progress sequence */}
+          <div
+            className="apple-sequence"
+            aria-label={`${numFound} of 3 apples found`}
+          >
+            {[1, 2, 3].map((number, index) => (
+              <React.Fragment key={number}>
+                <span
+                  className={`sequence-number ${
+                    number <= numFound ? 'collected' : 'uncollected'
+                  }`}
+                >
+                  {number}
+                </span>
+
+                {index < 2 && (
+                  <span
+                    className={`sequence-line ${
+                      number < numFound ? 'collected' : 'uncollected'
+                    }`}
+                  />
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+
+          {/* Only show the action after all three have been found */}
+          {status.complete && (
             <button
               className="apple-button"
               onClick={() => navigate('/secret/leaderboard')}
@@ -127,8 +131,9 @@ export default function Apple({ paintingId }) {
               <span>Record your achievement</span>
               <span className="button-arrow">→</span>
             </button>
-          </div>
-        )}
+          )}
+
+        </div>
 
       </div>
     </main>
